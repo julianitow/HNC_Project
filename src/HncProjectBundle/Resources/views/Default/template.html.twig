@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
+
+    {% block head %}
+
+    <title>Welcome to Symfony!</title>
+
+    {% endblock %}
+
+</head>
+
+<body>
+
+{% block body %}
+
+<h1>{{ page_title }}</h1>
+
+<ul id="navigation">
+    {% for item in navigation %}
+        <li><a href="{{ item.href }}">{{ item.caption }}</a></li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+
+<link href="{{ asset('js/bootstrap.bundle.min.js') }}" rel="stylesheet">
+
+</body>
+
+<footer>
+
+    {% block footer %}
+
+    {% endblock %}
+
+</footer>
+
+</html>
