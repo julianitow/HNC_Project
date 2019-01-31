@@ -1,3 +1,11 @@
 hnc_project_homepage:
     path:     /
     defaults: { _controller: HncProjectBundle:Default:index }
+
+register:
+    path:     /register
+    defaults: { _controller: HncProjectBundle:User:register }
+
+login:
+    path:     /login
+    defaults: { _controller: HncProjectBundle:User:login }
