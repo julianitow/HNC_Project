@@ -1,7 +1,9 @@
-{% extends "::base.html.twig" %}
+{% extends "@HncProject/Default/template.html.twig" %}
 
 {% block title %}HncProjectBundle:User:register{% endblock %}
 
 {% block body %}
 <h1>Welcome to the User:register page</h1>
+    {{ form_start(registerForm) }}
+    {{ form_row(registerForm.firstname) }}
 {% endblock %}

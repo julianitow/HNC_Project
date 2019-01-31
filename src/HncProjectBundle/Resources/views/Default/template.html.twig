@@ -13,19 +13,19 @@
 </head>
 
 <body>
+<div class="container">
+    {% block body %}
 
-{% block body %}
+        <h1>{{ page_title }}</h1>
 
-<h1>{{ page_title }}</h1>
+        <ul id="navigation">
+            {% for item in navigation %}
+                <li><a href="{{ item.href }}">{{ item.caption }}</a></li>
+            {% endfor %}
+        </ul>
 
-<ul id="navigation">
-    {% for item in navigation %}
-        <li><a href="{{ item.href }}">{{ item.caption }}</a></li>
-    {% endfor %}
-</ul>
-
-{% endblock %}
-
+    {% endblock %}
+</div>
 <link href="{{ asset('js/bootstrap.bundle.min.js') }}" rel="stylesheet">
 
 </body>

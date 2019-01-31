@@ -9,3 +9,7 @@ register:
 login:
     path:     /login
     defaults: { _controller: HncProjectBundle:User:login }
+
+logout:
+    path:     /logout
+    defaults: { _controller: HncProjectBundle:User:logout }
