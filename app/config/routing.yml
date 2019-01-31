@@ -1,3 +1,7 @@
+hnc_project:
+    resource: "@HncProjectBundle/Resources/config/routing.yml"
+    prefix:   /
+
 app:
     resource: '@AppBundle/Controller/'
     type: annotation

@@ -1,0 +1,4 @@
+services:
+#    hnc_project.example:
+#        class: HncProjectBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
