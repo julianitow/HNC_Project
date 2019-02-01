@@ -1,6 +1,7 @@
 <?php
 
 namespace HncProjectBundle\Entity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="HncProjectBundle\Repository\UserRepository")
  */
-class User
+class User implements UserInterface, \Serializable
 {
     /**
      * @var int
@@ -73,9 +74,14 @@ class User
     /**
      * @var int
      *
-     * @ORM\Column(name="portfolioID", type="integer", unique=true)
+     * @ORM\Column(name="portfolioID", type="integer", unique=true, nullable=true)
      */
     private $portfolioID;
+
+    /**
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
 
 
     /**
@@ -278,6 +284,70 @@ class User
     public function getPortfolioID()
     {
         return $this->portfolioID;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return mixed
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername()
+    {
+        $username = $this->getFirstname() . "_" . $this->getLastname();
+
+        return $username;
+    }
+
+    /**
+     * @return null
+     */
+    public function getSalt()
+    {
+        return null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoles()
+    {
+        return ['ROLE_USER'];
+    }
+
+    public function eraseCredentials()
+    {
+    }
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize([
+            $this->id,
+            $this->username,
+            $this->password,
+            // see section on salt below
+            // $this->salt,
+        ]);
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->username,
+            $this->password,
+            // see section on salt below
+            // $this->salt
+            ) = unserialize($serialized, ['allowed_classes' => false]);
     }
 }
 

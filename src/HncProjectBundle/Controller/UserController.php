@@ -2,6 +2,7 @@
 
 namespace HncProjectBundle\Controller;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use HncProjectBundle\Entity\User;
@@ -35,6 +36,30 @@ class UserController extends Controller
             ;
         $registerForm = $registerFormBuider->getForm();
         $registerForm->handleRequest($request);
+
+        if ($registerForm->isSubmitted() && $registerForm->isValid())
+        {
+            $user = $registerForm->getData();
+            $passwordEncoder = $this->get('security.password_encoder');
+            $password = $passwordEncoder->encodePassword($user, $user->getPassword());
+            $user->setPassword($password);
+            $manager = $this->getDoctrine()->getManager();
+
+            $manager->persist($user);
+
+            try
+            {
+                $manager->flush();
+            }
+            catch (\PDOException $e)
+            {
+                $error = "PDOException";
+            }
+            catch (UniqueConstraintViolationException $e)
+            {
+                $error = "UniqueConstraintViolationException";
+            }
+        }
 
 
         return $this->render('@HncProject\User\register.html.twig', ['registerForm' => $registerForm->createView()]);
