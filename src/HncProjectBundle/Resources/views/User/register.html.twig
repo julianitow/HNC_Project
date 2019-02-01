@@ -1,9 +1,19 @@
 {% extends "@HncProject/Default/template.html.twig" %}
 
-{% block title %}HncProjectBundle:User:register{% endblock %}
+{% block head %}
+    <title>Registration</title>
+{% endblock %}
 
 {% block body %}
 <h1>Welcome to the User:register page</h1>
     {{ form_start(registerForm) }}
     {{ form_row(registerForm.firstname) }}
+    {{ form_row(registerForm.lastname) }}
+    {{ form_row(registerForm.email) }}
+    {{ form_row(registerForm.birthday) }}
+    {{ form_row(registerForm.phonenumber) }}
+    {{ form_row(registerForm.receiveMarketing) }}
+    {{ form_row(registerForm.password.first) }}
+    {{ form_row(registerForm.password.second) }}<br>
+    {{ form_end(registerForm, { 'attr' : { 'style' : 'float : right' } }) }}
 {% endblock %}
