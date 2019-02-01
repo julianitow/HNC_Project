@@ -4,4 +4,11 @@
 
 {% block body %}
 <h1>Welcome to the User:login page</h1>
+    <div id="loginForm">
+        {{ form_start(loginForm) }}
+        {{ form_row(loginForm.email, { 'id' : 'login_email' }) }}
+        {{ form_row(loginForm.password, { 'id' : 'login_password' }) }}<br>
+        {{ form_row(loginForm.login, { 'attr' : { 'style' : 'float : right' } }) }}
+        {{ form_end(loginForm) }}
+    </div>
 {% endblock %}

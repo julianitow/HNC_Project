@@ -65,9 +65,49 @@ class UserController extends Controller
         return $this->render('@HncProject\User\register.html.twig', ['registerForm' => $registerForm->createView()]);
     }
 
-    public function loginAction()
+    public function loginAction(Request $request)
     {
-        return $this->render('@HncProject\User\login.html.twig');
+        $user = new User();
+        $loginFormBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user, ['allow_extra_fields' => true]);
+        $loginFormBuilder
+            ->add('email', EmailType::class, ['label' => "Email :", 'attr' => ['class' => 'form-control', 'placeholder' => "username@email.com"]])
+            ->add('password', PasswordType::class, ['label' => "Password : ", 'attr' => [ 'class' => 'form-control', 'placeholder' => "********"]])
+            ->add('login', SubmitType::class, ['label' => "Login", 'attr' => ['class' => 'btn btn-primary']])
+            ;
+        $loginForm = $loginFormBuilder->getForm();
+        $loginForm->handleRequest($request);
+
+        if ($loginForm->isSubmitted() && $loginForm-> isValid())
+        {
+            $user = $loginForm->getData();
+            $enteredPassword = $user->getPassword();
+            $manager = $this->getDoctrine()->getManager();
+            $repositoryUsers = $manager->getRepository('HncProjectBundle:User');
+            $passwordEncoder = $this->container->get('security.password_encoder');
+            $hashedPassword = $repositoryUsers->getHash($user->getEmail());
+            //verification du resultat de la requete
+            if ($hashedPassword != "NoResultException")
+            {
+                $user->setPassword($hashedPassword['password']);
+                var_dump($enteredPassword);
+            }
+            else
+            {
+                $loginError = "NoResultException";
+                var_dump($loginError);
+            }
+            if ($passwordEncoder->isPasswordValid($user, $enteredPassword))
+            {
+                $user = $repositoryUsers->loadUserByEmail($user->getEmail());
+                var_dump($user);
+            }
+            else
+            {
+                echo "ERROR LOGIN";
+            }
+        }
+
+        return $this->render('@HncProject\User\login.html.twig', ['loginForm' => $loginForm->createView()]);
     }
 
     public function logoutAction()

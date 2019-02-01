@@ -30,4 +30,26 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function getHash($email)
+    {
+        $qb = $this->_em->createQueryBuilder('u');
+
+        $qb ->select('u.password')
+            ->from('HncProjectBundle:User', 'u')
+            ->where('u.email = :email')
+            ->setParameter('email', $email);
+
+        $requete = $qb->getQuery();
+
+        try
+        {
+            $result = $requete->getSingleResult();
+        }
+        catch (\Doctrine\ORM\NoResultException $e)
+        {
+            $result = "NoResultException";
+        }
+        return $result;
+    }
 }
