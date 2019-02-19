@@ -1,0 +1,51 @@
+#space_div
+{
+    padding-top: 5%;
+}
+
+.home_card
+{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: white;
+    opacity: 1;
+}
+
+.card_header
+{
+    padding: 2%;
+    text-align: center;
+    font-size: 40px;
+}
+
+.card_body
+{
+    max-height: 400px;
+    overflow: auto;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-bottom: 2%;
+}
+
+.card_footer
+{
+    height: 5%;
+    padding: 2%;
+    background-color: lightgrey;
+}
+
+.home_card.card_header
+{
+    padding: 2%;
+    box-shadow: white;
+}
+
+.home_card.card_body
+{
+    padding: 2%;
+}
+
+.home_card.card_footer
+{
+    padding: 2%;
+    background-color: lightgrey;
+}

@@ -287,6 +287,14 @@ class User implements UserInterface, \Serializable
     }
 
     /**
+     * @param $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
      * Get isActive
      *
      * @return mixed
@@ -331,8 +339,10 @@ class User implements UserInterface, \Serializable
     {
         return serialize([
             $this->id,
-            $this->username,
+            $this->firstname,
+            $this->getUsername(),
             $this->password,
+            $this->isActive
             // see section on salt below
             // $this->salt,
         ]);

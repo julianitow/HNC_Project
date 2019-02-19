@@ -15,6 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class UserController extends Controller
 {
@@ -28,7 +30,7 @@ class UserController extends Controller
             ->add('email', EmailType::class, ['label' => "Email :", 'attr' => ['class' => 'form-control', 'placeholder' => "abcdefghij@email.com"]])
             ->add('birthday', BirthdayType::class, ['label' => "Birthday :", 'attr' => ['class' => 'form-control']])
             ->add('phonenumber', TelType::class, ['label' => "Phone number :", 'attr' => ['class' => 'form-control', 'placeholder' => "+44XXXXXXXXXXX"]])
-            ->add('receiveMarketing', CheckboxType::class, ['label' => "Receive Marketing ?", 'attr' => ['class' => 'form-check-input']])
+            ->add('receiveMarketing', CheckboxType::class, ['label' => "Receive Marketing ?", 'required' => false, 'attr' => ['class' => 'form-check-input']])
             ->add('password', RepeatedType::class, ['type' => PasswordType::class,
                 'first_options' => ['label'=> 'Password', 'attr' => ['class' => "form-control", 'placeholder' => "********"]],
                 'second_options' => ['label'=> 'Password confirmation', 'attr' => ['class' => "form-control", 'placeholder' => "*********"]]])
@@ -89,17 +91,25 @@ class UserController extends Controller
             if ($hashedPassword != "NoResultException")
             {
                 $user->setPassword($hashedPassword['password']);
-                var_dump($enteredPassword);
             }
             else
             {
                 $loginError = "NoResultException";
-                var_dump($loginError);
             }
             if ($passwordEncoder->isPasswordValid($user, $enteredPassword))
             {
                 $user = $repositoryUsers->loadUserByEmail($user->getEmail());
-                var_dump($user);
+                $user->setIsActive(true);
+                $token = new UsernamePasswordToken($user, $user->getEmail(), 'main', $user->getRoles());
+                $token->setUser($user);
+                $this->get('security.token_storage')->setToken($token);
+                $this->get('session')->set('token', $token);
+                $this->get('session')->migrate();
+                $this->get('session')->set('_security_main', $user->serialize($token));
+                $this->get('session')->save();
+                $event = new InteractiveLoginEvent($request, $token);
+                $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
+                //echo "LOGIN SUCCEED";
             }
             else
             {
@@ -112,6 +122,7 @@ class UserController extends Controller
 
     public function logoutAction()
     {
+
         return $this->render('@HncProject\User\logout.html.twig');
     }
 }

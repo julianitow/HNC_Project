@@ -1,19 +1,49 @@
 {% extends "@HncProject/Default/template.html.twig" %}
 
 {% block head %}
-    <title>Registration</title>
+    <title>Register</title>
+    <style>
+        body{
+            background: #ffffff url("{{ asset('img/backgrounds/login/login_background_5.jpg') }}") no-repeat right top;
+            background-size: 100%;
+        }
+    </style>
 {% endblock %}
 
-{% block body %}
-<h1>Welcome to the User:register page</h1>
-    {{ form_start(registerForm) }}
-    {{ form_row(registerForm.firstname) }}
-    {{ form_row(registerForm.lastname) }}
-    {{ form_row(registerForm.email) }}
-    {{ form_row(registerForm.birthday) }}
-    {{ form_row(registerForm.phonenumber) }}
-    {{ form_row(registerForm.receiveMarketing) }}
-    {{ form_row(registerForm.password.first) }}
-    {{ form_row(registerForm.password.second) }}<br>
-    {{ form_end(registerForm, { 'attr' : { 'style' : 'float : right' } }) }}
+{% block body_first %}
+    <ul class="navbar">
+        <li><a href="{{ path('hnc_project_homepage') }}" class="active"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="{{ path('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+        <li><a href="{{ path('register') }}"><i class="fas fa-user-plus"></i> Register</a></li>
+    </ul>
+{% endblock %}
+
+{% block body_container %}
+<div class="row" id="space_div"></div>
+<div class="row">
+    <div class="col-lg-3"></div>
+
+    <div class="col-lg-6">
+        <div class="home_card">
+            <div class="card_header">
+                Register
+            </div>
+            <div class="card_body">
+                {{ form_start(registerForm) }}
+                {{ form_row(registerForm.firstname) }}
+                {{ form_row(registerForm.lastname) }}
+                {{ form_row(registerForm.email) }}
+                {{ form_row(registerForm.birthday) }}
+                {{ form_row(registerForm.phonenumber) }}
+                {{ form_row(registerForm.receiveMarketing) }}
+                {{ form_row(registerForm.password.first) }}
+                {{ form_row(registerForm.password.second) }}<br>
+            </div>
+            <div class="home_card card_footer">
+                {{ form_end(registerForm, { 'attr' : { 'style' : 'float : right' } }) }}
+                <div class="btn btn-light">Reset fields</div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

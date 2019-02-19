@@ -19,7 +19,7 @@ security:
             security: false
 
         main:
-            pattern: ^/
+            pattern: ~
             security: false
             provider: our_db_provider
             # activate different ways to authenticate

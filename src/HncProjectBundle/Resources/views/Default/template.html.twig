@@ -3,7 +3,15 @@
 <head>
 
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
-
+    <link href="{{ asset('css/custom_style.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/navbar.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/footer.css') }}" rel="stylesheet">
+    <link href="{{ asset('font-awesome/css/all.css') }}" rel="stylesheet">
+    <style>
+        body{
+            margin:0;
+        }
+    </style>
     {% block head %}
 
     <title>Welcome to Symfony!</title>
@@ -13,8 +21,10 @@
 </head>
 
 <body>
+{% block body_first %}
+{% endblock %}
 <div class="container">
-    {% block body %}
+    {% block body_container %}
 
         <h1>{{ page_title }}</h1>
 
@@ -26,6 +36,11 @@
 
     {% endblock %}
 </div>
+
+<div class="card-footer text-muted" id="footer">
+    FOOTER
+</div><!--footer-->
+
 <link href="{{ asset('js/bootstrap.bundle.min.js') }}" rel="stylesheet">
 
 </body>
