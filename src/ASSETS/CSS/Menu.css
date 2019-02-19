@@ -24,7 +24,7 @@ nav *:first-child{
   top: 95px;
   clear: both; }
 
-  nav a{
+  nav a,label{
   display: block;
   font-size: 2.2em;
   color: #3a3a33;
