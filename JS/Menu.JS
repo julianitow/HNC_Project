@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 //https://www.creativebloq.com/how-to/create-a-slide-out-menu
-
-window.addEventListener("load",function(){
+function prepareMenu() {
   var Burger = document.getElementById('nav-icon1');
   var nodes = document.querySelectorAll('nav[data-action="expand"] *:first-child'); // Get this line again
   for(var i=0; i<nodes.length; i++){
@@ -15,23 +13,4 @@ window.addEventListener("load",function(){
     }
     });
   }
-});
-=======
-//https://www.creativebloq.com/how-to/create-a-slide-out-menu
-
-window.addEventListener("load",function(){
-  var Burger = document.getElementById('nav-icon1');
-  var nodes = document.querySelectorAll('nav[data-action="expand"] *:first-child'); // Get this line again
-  for(var i=0; i<nodes.length; i++){
-    nodes[i].addEventListener("click",function(){ // Add burger menu element to open
-    if(this.parentNode.className == "open"){
-      this.parentNode.className = "";
-      Burger.className="";
-    }else{
-      this.parentNode.className = "open";
-      Burger.className="open";
-    }
-    });
-  }
-});
->>>>>>> 6f6ee0b14617a2fb4bacb61ab7966284796e663b
+}
