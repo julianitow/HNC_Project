@@ -1,0 +1,27 @@
+section#FsteScroll {
+
+  overflow: hidden;
+  height: 120px;
+  width: auto;
+  margin: 0 auto;
+  position: fixed;
+  top: 150px;
+  left: 160px;
+
+}
+section#FsteScroll > article > p:first-child(0) {
+
+  border-left: 2px solid #022660;
+}
+
+section#FsteScroll > article > p{
+
+  border-right: 2px solid #022660;
+
+}
+section#FsteScroll > article {
+
+  display: inline-block;
+  padding-left: 1em;
+  width: 225px;
+}
