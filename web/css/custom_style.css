@@ -75,10 +75,10 @@ div.inline
 .article_container
 {
     position: fixed;
-    float: right;
     overflow: auto;
     width: 20%;
     height: 90%;
+    margin-right: 0;
 }
 
 .ftse_share
