@@ -130,6 +130,7 @@ class UserController extends Controller
         $user_id = $session->get('user_id');
         $user = $this->get_user($user_id);
         $this->get('session')->set('_security_main', $user->unserialize($user->serialize()));
+        $session->invalidate();
         $redirection_response = $this->redirectToRoute('login');
         echo 'Logging out...' . $redirection_response;
         return $redirection_response;
