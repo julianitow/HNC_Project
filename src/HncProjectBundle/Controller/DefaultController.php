@@ -10,11 +10,13 @@ class DefaultController extends Controller
     public function indexAction(Request $request)
     {
         $logged_in = false;
+        $user_id = null;
         if ( null != $request->getSession()->get('token'))
         {
             //var_dump($request->getSession()->get('token')->getUser());
             //var_dump($request->getSession()->get('_security_main'));
             $token = $token = $this->get('session')->get('token');
+            $user_id = $request->getSession()->get('user_id');
             $this->get('security.token_storage')->setToken($token);
             $logged_in = true;
         }
@@ -24,7 +26,8 @@ class DefaultController extends Controller
         $ftse_data = $this->ftse_json();
 
         return $this->render('@HncProject/Default/index.html.twig', ['logged_in' => $logged_in,
-            'articles'=> $news->articles, 'shares' => $shares, 'ftse_data' => $ftse_data]);
+            'user_id' => $user_id, 'articles'=> $news->articles, 'shares' => $shares,
+            'ftse_data' => $ftse_data]);
     }
 
     public function get_JSON($url)
