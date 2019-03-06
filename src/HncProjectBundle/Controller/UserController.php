@@ -148,7 +148,7 @@ class UserController extends Controller
         $user = new User();
         $manager = $this->getDoctrine()->getManager();
         $repositoryUsers = $manager->getRepository('HncProjectBundle:User');
-        
+        $user = $repositoryUsers->findUserById($this->get('session')->get('user_id'));
 
         return $this->render('@HncProject\User\user_settings.html.twig');
     }
