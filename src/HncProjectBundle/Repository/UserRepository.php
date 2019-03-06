@@ -52,4 +52,26 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
         }
         return $result;
     }
+
+    public function loadUserById($id)
+    {
+        $qb = $this->_em->createQueryBuilder('u');
+
+        $qb ->select('u')
+            ->from('HncProjectBundle:User', 'u')
+            ->where('u.id = :id')
+            ->setParameter('id', $id);
+
+        $requete = $qb->getQuery();
+
+        try
+        {
+            $result = $requete->getSingleResult();
+        }
+        catch (\Doctrine\ORM\NoResultException $e)
+        {
+            $result = "NoResultException";
+        }
+        return $result;
+    }
 }

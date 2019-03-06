@@ -69,6 +69,7 @@ class UserController extends Controller
 
     public function loginAction(Request $request)
     {
+        $code = null;
         $user = new User();
         $loginFormBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user, ['allow_extra_fields' => true]);
         $loginFormBuilder
@@ -104,6 +105,7 @@ class UserController extends Controller
                 $token->setUser($user);
                 $this->get('security.token_storage')->setToken($token);
                 $this->get('session')->set('token', $token);
+                $this->get('session')->set('user_id', $user->getId());
                 $this->get('session')->migrate();
                 $this->get('session')->set('_security_main', $user->serialize($token));
                 $this->get('session')->save();
@@ -115,16 +117,30 @@ class UserController extends Controller
             else
             {
                 echo "ERROR LOGIN";
+                $code ="LOGIN_FAILED_O1";
             }
         }
 
-        return $this->render('@HncProject\User\login.html.twig', ['loginForm' => $loginForm->createView()]);
+        return $this->render('@HncProject\User\login.html.twig', ['loginForm' => $loginForm->createView(), 'code' => $code]);
     }
 
-    public function logoutAction()
+    public function logoutAction(Request $request)
     {
+        $session = $request->getSession();
+        $user_id = $session->get('user_id');
+        $user = $this->get_user($user_id);
+        $this->get('session')->set('_security_main', $user->unserialize($user->serialize()));
+        $redirection_response = $this->redirectToRoute('login');
+        echo 'Logging out...' . $redirection_response;
+        return $redirection_response;
+    }
 
-        return $this->render('@HncProject\User\logout.html.twig');
+    public function get_user($user_id)
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $repositoryUsers = $manager->getRepository('HncProjectBundle:User');
+        $user = $repositoryUsers->findOneById($user_id);
+        return $user;
     }
 
     public function user_settingsAction(Request $request)

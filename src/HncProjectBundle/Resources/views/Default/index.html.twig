@@ -13,7 +13,13 @@
                         <strong>{{ share['Sym'] }}</strong> <br>
                         {{ share['Name'] }} <br>
                         Current price: {{ share['CurPrice'] }} <br>
-                        Chg: {{ share['Chg'] }}
+                        {% if share['Chg'] < 0 %}
+                            Chg: <a id="Chg_neg"> {{ share['Chg'] }} <i class="fas fa-caret-down"></i></a>
+                        {% elseif share['Chg'] > 0 %}
+                            Chg: <a id="Chg_pos"> {{ share['Chg'] }} <i class="fas fa-caret-up"></i></a>
+                        {% else %}
+                            Chg: {{ share['Chg'] }}
+                        {% endif %}
                     </div>
                 {% endfor %}
         </div><!-- col ftse_datas -->
@@ -42,6 +48,11 @@
                     </div>
                 {% endfor %}
             </div>
+        </div>
+    </div><!-- row -->
+    <div class="container-fluid" id ="body_content">
+        <div class="row">
+            <h3>Contents:</h3>
         </div>
     </div>
 {% endblock %}

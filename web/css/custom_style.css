@@ -81,7 +81,23 @@ div.inline
     margin-right: 0;
 }
 
-.ftse_share
+.slide.ftse_share
 {
+    text-align: center;
+    background-color: whitesmoke;
+    opacity: 1;
     border: 1px Solid black;
+    border-radius: 2%;
+}
+
+#Chg_neg
+{
+    font-weight: bold;
+    color: red;
+}
+
+#Chg_pos
+{
+    font-weight: bold;
+    color: green;
 }
