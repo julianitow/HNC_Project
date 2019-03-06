@@ -127,8 +127,12 @@ class UserController extends Controller
         return $this->render('@HncProject\User\logout.html.twig');
     }
 
-    public function user_settingsAction()
+    public function user_settingsAction(Request $request)
     {
+        $user = new User();
+        $manager = $this->getDoctrine()->getManager();
+        $repositoryUsers = $manager->getRepository('HncProjectBundle:User');
+        
 
         return $this->render('@HncProject\User\user_settings.html.twig');
     }
