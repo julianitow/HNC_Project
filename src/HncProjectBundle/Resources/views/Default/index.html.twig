@@ -7,7 +7,7 @@
 
 {% block body_first %}
     <div class="row">
-        <div class="col-8 inline ftse_datas">
+        <div class="col-sm-9 inline ftse_datas">
                 {% for share in ftse_data['ShareData'] %}
                     <div class="slide ftse_share">
                         <strong>{{ share['Sym'] }}</strong> <br>
@@ -17,7 +17,8 @@
                     </div>
                 {% endfor %}
         </div><!-- col ftse_datas -->
-        <div class="col-4">
+        <div class="col-sm-3">
+            <h3>FLASH NEWS:</h3>
             <div class="article_container">
                 {% for article in articles %}
                     <div class="article">
@@ -45,9 +46,6 @@
     </div>
 {% endblock %}
 {% block body_container %}
-<div class="row">
-
-</div><!-- row -->
 
 {% endblock %}
 
