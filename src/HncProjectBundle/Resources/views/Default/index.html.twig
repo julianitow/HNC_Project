@@ -8,8 +8,48 @@
 {% block body_first %}
 {% endblock %}
 {% block body_container %}
-
-INDEX
+    {{ dump(ftse_data) }}
+<div class="row">
+    <div class="col-lg-10 inline">
+        <div class="ftse_datas">
+            {% for  share in ftse_data['ShareData'] %}
+            <div class="slide ftse_share">
+                <strong>{{ share['Sym'] }}</strong> <br>
+                {{ share['Name'] }} <br>
+                Current price: {{ share['CurPrice'] }} <br>
+                Chg: {{ share['Chg'] }}
+                <div id="chartContainer" style="height: 100px; width: 100%;"></div>
+            </div>
+            {% endfor %}
+        </div>
+        <div id="chartContainer" style="height: 100px; width: 35%;"></div>
+    </div>
+</div><!--row-->
+<div class="row">
+    <div class="col-lg-4 article_container">
+        {% for article in articles %}
+            <div class="article">
+                <div class="home_card">
+                    <div class="article card_header">
+                        {{ article.source.name }}
+                    </div>
+                    <div class="card_picture">
+                        <img src="{{ article.urlToImage }}" width="100%">
+                    </div>
+                    <div id="text_article" class="card_body">
+                        <strong>{{ article.title }}</strong><br>
+                        {{ article.description }}
+                    </div>
+                    <div class="card_footer text-center">
+                        <i class="fas fa-user-edit"></i> {{ article.author }}<br>
+                        <i class="fas fa-calendar-check"></i> Published on {{ article.publishedAt|date("m/d/Y") }}<br>
+                        <a href="{{ article.url }}"><i class="fas fa-link"></i> See more</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock %}
 

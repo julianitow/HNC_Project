@@ -5,6 +5,7 @@
 
 .home_card
 {
+
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     background-color: white;
     opacity: 1;
@@ -48,4 +49,39 @@
 {
     padding: 2%;
     background-color: lightgrey;
+}
+
+.article
+{
+    padding: 1%;
+}
+
+div.inline
+{
+    float:left;
+}
+
+.clearBoth
+{
+    clear:both;
+}
+
+.article.card_header
+{
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.article_container
+{
+    position: fixed;
+    float: right;
+    overflow: auto;
+    width: 20%;
+    height: 90%;
+}
+
+.ftse_share
+{
+    border: 1px Solid black;
 }

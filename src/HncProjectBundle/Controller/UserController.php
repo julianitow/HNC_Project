@@ -109,7 +109,8 @@ class UserController extends Controller
                 $this->get('session')->save();
                 $event = new InteractiveLoginEvent($request, $token);
                 $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
-                //echo "LOGIN SUCCEED";
+                $redirect_response = $this->redirectToRoute("hnc_project_homepage");
+                echo $redirect_response;
             }
             else
             {
