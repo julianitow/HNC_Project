@@ -126,4 +126,10 @@ class UserController extends Controller
 
         return $this->render('@HncProject\User\logout.html.twig');
     }
+
+    public function user_settingsAction()
+    {
+
+        return $this->render('@HncProject\User\user_settings.html.twig');
+    }
 }
