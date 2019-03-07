@@ -81,6 +81,11 @@ div.inline
     margin-right: 0;
 }
 
+.user_settings
+{
+    padding-top: 1%;
+}
+
 .slide.ftse_share
 {
     text-align: center;

@@ -74,4 +74,25 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
         }
         return $result;
     }
+
+    public function updateUserSettings($id, $firstname, $lastname, $email, $birthday, $phoneNumber)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $post = $this->getDoctrine()->getManager()->getRepository('HncProjectBundle:User')->findBy($id);
+
+        if (!$post) {
+            throw $this->createNotFoundException('Record not found...');
+        }
+
+        $post->setFirstname($firstname);
+        $post->setLastname($lastname);
+        $post->setEmail($email);
+        $post->setBirthday($birthday);
+        $post->setPhonenumber($phoneNumber);
+
+        $entityManager->flush();
+
+        return;
+    }
 }
