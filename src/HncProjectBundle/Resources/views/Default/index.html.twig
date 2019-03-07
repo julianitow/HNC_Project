@@ -8,6 +8,9 @@
 {% block body_first %}
     <div class="row">
         <div class="col-sm-9 inline ftse_datas">
+            {% if error_code == "error_connection_01" %}
+                <div class="alert alert-danger">Source unreachable, sorry.</div>
+            {% else %}
                 {% for share in ftse_data['ShareData'] %}
                     <div class="slide ftse_share">
                         <strong>{{ share['Sym'] }}</strong> <br>
@@ -22,6 +25,7 @@
                         {% endif %}
                     </div>
                 {% endfor %}
+            {% endif %}
         </div><!-- col ftse_datas -->
         <div class="col-sm-3">
             <h3>FLASH NEWS:</h3>
@@ -36,7 +40,7 @@
                                 <img src="{{ article.urlToImage }}" width="100%">
                             </div>
                             <div id="text_article" class="card_body">
-                                <strong>{{ article.title }}</strong><br>
+                                <center><strong>{{ article.title }}</strong></center><br>
                                 {{ article.description }}
                             </div>
                             <div class="card_footer text-center">
@@ -52,7 +56,26 @@
     </div><!-- row -->
     <div class="container-fluid" id ="body_content">
         <div class="row">
-            <h3>Contents:</h3>
+            <br>
+            <h3>Contents:<br></h3>
+            Search result:<br>
+
+            <div class="share">
+                <div class="home_card">
+                    <div class="article card_header">
+                        {{ dump(search_result_data) }}
+                    </div>
+                    <div id="text_article" class="card_body">
+                        <ul>
+                            <li></li>
+                        </ul>
+                    </div>
+                    <div class="card_footer text-center">
+                        <i class="fas fa-calendar-check"></i>{{ search_result_day }}<br>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 {% endblock %}
