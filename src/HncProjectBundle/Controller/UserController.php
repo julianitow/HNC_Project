@@ -143,4 +143,10 @@ class UserController extends Controller
         $user = $repositoryUsers->findOneById($user_id);
         return $user;
     }
+
+    public function user_settingsAction()
+    {
+
+        return $this->render('@HncProject\User\user_settings.html.twig');
+    }
 }
