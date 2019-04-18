@@ -144,9 +144,73 @@ class UserController extends Controller
         return $user;
     }
 
-    public function user_settingsAction()
+    public function user_settingsAction(Request $request)
     {
 
-        return $this->render('@HncProject\User\user_settings.html.twig');
+        $ftse_data = null;
+        //$user = new User();
+        $manager = $this->getDoctrine()->getManager();
+        $repositoryUsers = $manager->getRepository('HncProjectBundle:User');
+        $user = $repositoryUsers->findOneById($this->get('session')->get('user_id'));
+
+        $user_settingsFormBuider = $this->get('form.factory')->createBuilder(FormType::class, $user, ['allow_extra_fields' => true]);
+        $user_settingsFormBuider
+            ->add('firstname', TextType::class, ['label' => "Firstname :", 'attr' => ['class' => "form-control", 'value' => $user->getFirstname()]])
+            ->add('lastname', TextType::class, ['label' => "Lastname :", 'attr' => ['class' => "form-control", 'value' => $user->getLastname()]])
+            ->add('email', EmailType::class, ['label' => "Email :", 'attr' => ['class' => 'form-control', 'value' => $user->getEmail()]])
+            ->add('birthday', BirthdayType::class, ['label' => "Birthday :", 'attr' => ['class' => 'form-control']])
+            ->add('phonenumber', TelType::class, ['label' => "Phone number :", 'attr' => ['class' => 'form-control', 'value' => $user->getPhoneNumber()]])
+            ->add('ChangeSettings', SubmitType::class, ['attr' => ['class' => 'btn btn-primary', 'style' => 'float : right']])
+        ;
+        $user_settingsForm = $user_settingsFormBuider->getForm();
+        $user_settingsForm->handleRequest($request);
+
+        if ($user_settingsForm->getClickedButton() && "ChangeSettings" === $user_settingsForm->getClickedButton()->getName()) {
+
+            $newUserSettings = $user_settingsForm->getData();
+
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $post = $this->getDoctrine()->getManager()->getRepository('HncProjectBundle:User')->findOneById($user->getId());
+
+            if (!$post) {
+                throw $this->createNotFoundException('Record not found...');
+            }
+
+            $firstname = $newUserSettings->getFirstname();
+            $lastname = $newUserSettings->getLastname();
+            $email = $newUserSettings->getEmail();
+            $birthday = $newUserSettings->getBirthday();
+            $phoneNumber = $newUserSettings->getPhoneNumber();
+
+            $post->setFirstname($firstname);
+            $post->setLastname($lastname);
+            $post->setEmail($email);
+            $post->setBirthday($birthday);
+            $post->setPhonenumber($phoneNumber);
+
+            $entityManager->persist($post);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('user_settings');
+
+        }
+
+        $user_passwordFormBuider = $this->get('form.factory')->createBuilder(FormType::class, $user, ['allow_extra_fields' => true]);
+        $user_passwordFormBuider
+            ->add('password', RepeatedType::class, ['type' => PasswordType::class,
+                'first_options' => ['label'=> 'Password', 'attr' => ['class' => "form-control"]],
+                'second_options' => ['label'=> 'Password confirmation', 'attr' => ['class' => "form-control"]]])
+            ->add('ChangePassword', SubmitType::class, ['attr' => ['class' => 'btn btn-primary', 'style' => 'float : right']])
+        ;
+        $user_passwordForm = $user_passwordFormBuider->getForm();
+        $user_passwordForm->handleRequest($request);
+
+        if ($user_passwordForm->getClickedButton() && "ChangePassword" === $user_passwordForm->getClickedButton()->getName()) {
+
+            echo 'mdrrrr';
+        }
+
+        return $this->render('@HncProject\User\user_settings.html.twig', ['ftse_data' => $ftse_data, 'logged_in' => false, 'user_settingsForm' => $user_settingsForm->createView(), 'user_passwordForm' => $user_passwordForm->createView()]);
     }
 }
