@@ -148,7 +148,6 @@ class UserController extends Controller
     {
 
         $ftse_data = null;
-        //$user = new User();
         $manager = $this->getDoctrine()->getManager();
         $repositoryUsers = $manager->getRepository('HncProjectBundle:User');
         $user = $repositoryUsers->findOneById($this->get('session')->get('user_id'));
@@ -211,6 +210,6 @@ class UserController extends Controller
             echo 'mdrrrr';
         }
 
-        return $this->render('@HncProject\User\user_settings.html.twig', ['ftse_data' => $ftse_data, 'logged_in' => false, 'user_settingsForm' => $user_settingsForm->createView(), 'user_passwordForm' => $user_passwordForm->createView()]);
+        return $this->render('@HncProject\User\user_settings.html.twig', ['ftse_data' => $ftse_data, 'logged_in' => true, 'user_settingsForm' => $user_settingsForm->createView(), 'user_passwordForm' => $user_passwordForm->createView()]);
     }
 }

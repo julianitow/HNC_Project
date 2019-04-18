@@ -2,6 +2,53 @@
 
 
 {% block head %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['line']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('number', 'Day');
+            data.addColumn('number', '{{ symbol_result }}');
+
+            data.addRows([
+                [1,  37.8],
+                [2,  30.9],
+                [3,  25.4],
+                [4,  11.7],
+                [5,  11.9],
+                [6,   8.8],
+                [7,   7.6],
+                [8,  12.3],
+                [9,  16.9],
+                [10, 12.8],
+                [11,  5.3],
+                [12,  6.6],
+                [13,  4.8],
+                [14,  4.2]
+            ]);
+
+            var options = {
+                chart: {
+                    title: 'Share state',
+                    subtitle: 'in pounds'
+                },
+                width: 900,
+                height: 500,
+                axes: {
+                    x: {
+                        0: {side: 'top'}
+                    }
+                }
+            };
+
+            var chart = new google.charts.Line(document.getElementById('line_top_x'));
+
+            chart.draw(data, google.charts.Line.convertOptions(options));
+        }
+    </script>
 
 {% endblock %}
 
@@ -54,34 +101,47 @@
             </div>
         </div>
     </div><!-- row -->
-    <div class="container-fluid" id ="body_content">
-        <div class="row">
-            <br>
-            <h3>Contents:<br></h3>
-            Search result:<br>
-
-            <div class="share">
-                <div class="home_card">
-                    <div class="article card_header">
-                        {{ dump(search_result_data) }}
-                    </div>
-                    <div id="text_article" class="card_body">
-                        <ul>
-                            <li></li>
-                        </ul>
-                    </div>
-                    <div class="card_footer text-center">
-                        <i class="fas fa-calendar-check"></i>{{ search_result_day }}<br>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
 {% endblock %}
 {% block body_container %}
     <div class="row">
-        TEST BODY
+        <div class="col-lg-2">
+            <div class="container-fluid" id ="body_content">
+                    <br>
+                    <h3>Contents:<br></h3>
+                    {% if search_result_data != null %}
+                    Search result:<br>
+                    <div class="share">
+                        <div class="home_card">
+                            <div class="article card_header">
+                                {% if symbol_result != null %}
+                                    {{ symbol_result }}
+                                {% endif %}
+                                {#{{ dump(search_result_data) }}#}
+                            </div>
+                            <div id="text_article" class="card_body">
+                                <ul>
+                                    <li>Open: {{ attribute(search_result_data, "1. open") }}</li>
+                                    <li>High: {{ attribute(search_result_data, "2. high") }}</li>
+                                    <li>Low: {{ attribute(search_result_data, "3. low") }}</li>
+                                    <li>Close: {{ attribute(search_result_data, "4. close") }}</li>
+                                    <li>Volume: {{ attribute(search_result_data, "5. volume") }}</li>
+                                </ul>
+                            </div>
+                            <div class="card_footer text-center">
+                                <i class="fas fa-calendar-check"></i> {{ search_result_day }}<br>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div><!-- row -->
+                <div class="row">
+                    <div class="col">
+                    </div>
+                </div>
+        </div>
+        <div class="col-lg-6">
+            <div id="line_top_x"></div>
+        </div>
     </div>
 {% endblock %}
 

@@ -13,10 +13,9 @@ class DefaultController extends Controller
     {
         $logged_in = false;
         $user_id = null;
+        $symbol_result = null;
         if ( null != $request->getSession()->get('token'))
         {
-            //var_dump($request->getSession()->get('token')->getUser());
-            //var_dump($request->getSession()->get('_security_main'));
             $token = $token = $this->get('session')->get('token');
             $user_id = $request->getSession()->get('user_id');
             $this->get('security.token_storage')->setToken($token);
@@ -39,11 +38,14 @@ class DefaultController extends Controller
         $search_bar = $this->search_form($request);
 
         $time_series_daily = 'Time Series (Daily)';
+        $meta_data = "Meta Data";
+        $symbol = "2. Symbol";
         if ($search_bar['search_result'] != null)
         {
             foreach($search_bar['search_result'] as $result)
             {
                 $data = $result->$time_series_daily;
+                $symbol_result = $result->$meta_data->$symbol;
 
                 if (property_exists($data, $today))
                 {
@@ -62,12 +64,13 @@ class DefaultController extends Controller
 
         return $this->render('@HncProject/Default/index.html.twig', ['logged_in' => $logged_in,
             'user_id' => $user_id, 'articles'=> $news->articles, 'search_form' => $search_bar['search_form']->createView(),
-            'search_result_day' => $search_result['day'], 'search_result_data' => $search_result['data'], 'ftse_data' => $ftse_data, 'error_code' => $error_code]);
+            'search_result_day' => $search_result['day'], 'search_result_data' => $search_result['data'], 'ftse_data' => $ftse_data,
+            'error_code' => $error_code, 'symbol_result' => $symbol_result]);
     }
 
     public function get_JSON($url)
     {
-        $body = null;
+        //$body = null;
 
         try
         {
@@ -75,7 +78,7 @@ class DefaultController extends Controller
         }
         catch (\Exception $e)
         {
-            $e->getMessage();
+            echo $e->getMessage();
         }
         return $body;
     }
@@ -118,7 +121,7 @@ class DefaultController extends Controller
 
         $search_form_Builder = $this->createFormBuilder();
         $search_form_Builder
-            ->add('search_input', SearchType::class, ['label' => false, 'attr' => ['class' => 'form-control', 'placeholder' => "ex: MSFT"]])
+            ->add('search_input', SearchType::class, ['label' => false, 'required' => false, 'attr' => ['class' => 'form-control', 'placeholder' => "ex: MSFT"]])
             ->add('search_btn', SubmitType::class, ['label' => "Search", 'attr' => ['class' => 'btn btn-success']])
         ;
         $search_form = $search_form_Builder->getForm();
