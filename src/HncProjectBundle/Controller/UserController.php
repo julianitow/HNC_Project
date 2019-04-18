@@ -113,10 +113,10 @@ class UserController extends Controller
                 $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
                 $redirect_response = $this->redirectToRoute("hnc_project_homepage");
                 echo $redirect_response;
+                $code = "LOGIN_SUCCEED_01";
             }
             else
             {
-                echo "ERROR LOGIN";
                 $code ="LOGIN_FAILED_O1";
             }
         }

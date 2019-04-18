@@ -33,6 +33,11 @@
                     {{ form_row(loginForm.email, { 'id' : 'login_email' }) }}
                     {{ form_row(loginForm.password, { 'id' : 'login_password' }) }}<br>
                 </div>
+                {% if code == "LOGIN_FAILED_O1" %}
+                    <div class="alert alert-danger">Login failed, bad username/password.</div>
+                {% elseif code == "LOGIN_SUCCEED_01" %}
+                    <div class="alert alert-success">Welcome, redirecting...</div>
+                {% endif %}
                 <div class="home_card card_footer">
                     {{ form_row(loginForm.login, { 'attr' : { 'style' : 'float : right' } }) }}
                     <div class="btn btn-light">Reset fields</div>
