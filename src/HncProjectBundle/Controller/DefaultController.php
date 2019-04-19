@@ -40,12 +40,19 @@ class DefaultController extends Controller
         $time_series_daily = 'Time Series (Daily)';
         $meta_data = "Meta Data";
         $symbol = "2. Symbol";
+        $volume = "5. volume";
+        $close = "4. close";
+        //var_dump($this->share_json($search_bar['search_result']['ShareData']->$meta_data->$symbol));
+        //var_dump($this->ftse_json());
+        $sh_object = array();
         if ($search_bar['search_result'] != null)
         {
+            //var_dump($this->share_json());
             foreach($search_bar['search_result'] as $result)
             {
                 $data = $result->$time_series_daily;
                 $symbol_result = $result->$meta_data->$symbol;
+                //var_dump($search_bar['search_result']);
 
                 if (property_exists($data, $today))
                 {
@@ -54,6 +61,19 @@ class DefaultController extends Controller
                 else if (property_exists($data, $yesterday))
                 {
                     $search_result = ['day' => $yesterday, 'data' => $data->$yesterday];
+                }
+                else
+                {
+                    $search_result = null;
+                }
+                foreach($result as $res)
+                {
+                    foreach($res as $sh)
+                    {
+                        //var_dump($sh);
+                        if(!is_string($sh))
+                            array_push($sh_object, $sh);
+                    }
                 }
             }
         }
@@ -65,7 +85,7 @@ class DefaultController extends Controller
         return $this->render('@HncProject/Default/index.html.twig', ['logged_in' => $logged_in,
             'user_id' => $user_id, 'articles'=> $news->articles, 'search_form' => $search_bar['search_form']->createView(),
             'search_result_day' => $search_result['day'], 'search_result_data' => $search_result['data'], 'ftse_data' => $ftse_data,
-            'error_code' => $error_code, 'symbol_result' => $symbol_result]);
+            'error_code' => $error_code, 'symbol_result' => $symbol_result, 'sh' => $sh_object]);
     }
 
     public function get_JSON($url)
