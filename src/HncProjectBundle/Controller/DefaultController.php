@@ -2,7 +2,10 @@
 
 namespace HncProjectBundle\Controller;
 
+use HncProjectBundle\Entity\Currency;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -160,5 +163,23 @@ class DefaultController extends Controller
         }
 
         return ['search_form' =>$search_form, 'search_result' => $share_data];
+    }
+
+    public function settingsAction(Request $request)
+    {
+        $currency = new Currency();
+        $currency_form_builder = $this->get('form.factory')->createBuilder(FormType::class, $currency, ['allow_extra_fields' => true]);
+        $currency_form_builder
+            ->add('name', CurrencyType::class)
+            ->add('Currency_change', SubmitType::class);
+        $currency_form = $currency_form_builder->getForm();
+        $currency_form->handleRequest($request);
+
+        if ($currency_form->getClickedButton() && "Currency_change" == $currency_form->getClickedButton()->getName())
+        {
+            $currency_name = $_POST['form']['name'];
+
+        }
+        return $this->render('@HncProject/Default/settings.html.twig', ['currency_form' => $currency_form->createView()]);
     }
 }

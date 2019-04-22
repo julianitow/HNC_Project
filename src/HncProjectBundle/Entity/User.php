@@ -83,6 +83,14 @@ class User implements UserInterface, \Serializable
      */
     private $isActive;
 
+    /**
+     * @var
+     * @ORM\Column(name="settings_id", type="integer")
+     * @ORM\OneToOne(targetEntity="user_settings")
+     * @ORM\JoinColumn(name="settings_id", referencedColumnName="id")
+     */
+    private $settingsID;
+
 
     /**
      * Get id
@@ -284,6 +292,21 @@ class User implements UserInterface, \Serializable
     public function getPortfolioID()
     {
         return $this->portfolioID;
+    }
+
+    public function setSettingsID($l_settingsID)
+    {
+        $this->settingsID = $l_settingsID;
+    }
+
+    /**
+     * Get settingsID
+     *
+     * @return int
+     */
+    public function getSettingsID()
+    {
+        return $this->settingsID;
     }
 
     /**

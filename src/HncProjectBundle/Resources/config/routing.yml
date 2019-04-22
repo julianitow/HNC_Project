@@ -17,3 +17,7 @@ logout:
 user_settings:
     path:     /user_settings
     defaults: { _controller: HncProjectBundle:User:user_settings }
+
+settings:
+    path:     /settings
+    defaults: { _controller: HncProjectBundle:Default:settings }

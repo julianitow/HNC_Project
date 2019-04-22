@@ -1,0 +1,23 @@
+{% extends '@HncProject/Default/template.html.twig' %}
+
+{% block body_first %}
+{% if app.session.get('user_id') == null %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="alert alert-danger">You must logged in to access this area: <a href="/login">Login</a>.</div>
+        </div>
+    </div>
+{% else %}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="form-goup">
+                {{ form_start(currency_form) }}
+                {{ form_row(currency_form.name, { 'attr' : { 'class' : "form-control" } }) }}
+                <br>
+                {{ form_row(currency_form.Currency_change, { 'attr' : { 'class' : "btn btn-primary", 'style' : "float : right" } }) }}
+                {{ form_end(currency_form) }}
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
