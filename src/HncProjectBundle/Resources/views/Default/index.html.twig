@@ -23,8 +23,7 @@
 
             var options = {
                 chart: {
-                    title: 'Share state',
-                    subtitle: 'in pounds'
+
                 },
                 width: 900,
                 height: 500,
@@ -32,6 +31,9 @@
                     x: {
                         0: {side: 'top'}
                     }
+                },
+                xAxis: {
+                    direction: '-1'
                 }
             };
 
@@ -96,7 +98,6 @@
 {% block body_container %}
     <!--<div class="row">-->
             <div class="container-fluid" id ="body_content">
-                <br>
                 <h3>Contents:<br></h3>
                 {% if search_result_data != null %}
                     <div class="row">
