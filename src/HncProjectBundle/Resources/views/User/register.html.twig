@@ -24,12 +24,14 @@
     <div class="col-lg-3"></div>
 
     <div class="col-lg-6">
+    {{ dump(user) }}
         <div class="home_card">
             <div class="card_header">
                 Register
             </div>
             <div class="card_body">
-                {{ form_start(registerForm) }}
+                <h3>User information</h3>
+                {{ form_start(registerForm, {'attr': { 'name' : 'user_info_form' }}) }}
                 {{ form_row(registerForm.firstname) }}
                 {{ form_row(registerForm.lastname) }}
                 {{ form_row(registerForm.email) }}
@@ -38,6 +40,8 @@
                 {{ form_row(registerForm.receiveMarketing) }}
                 {{ form_row(registerForm.password.first) }}
                 {{ form_row(registerForm.password.second) }}<br>
+                <h3>Settings</h3>
+                {{ form_row(registerForm.currency, { 'attr' : { 'class' : "form-control" } }) }}
             </div>
             <div class="home_card card_footer">
                 {{ form_end(registerForm, { 'attr' : { 'style' : 'float : right' } }) }}
@@ -46,4 +50,13 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+        submitForms = function()
+        {
+            document.forms['user_info_form'].submit();
+        }
+    </script>
 {% endblock %}

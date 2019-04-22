@@ -168,6 +168,7 @@ class DefaultController extends Controller
     public function settingsAction(Request $request)
     {
         $currency = new Currency();
+        //$user = $repositoryUsers->findOneById($this->get('session')->get('user_id'));
         $currency_form_builder = $this->get('form.factory')->createBuilder(FormType::class, $currency, ['allow_extra_fields' => true]);
         $currency_form_builder
             ->add('name', CurrencyType::class)
@@ -178,7 +179,6 @@ class DefaultController extends Controller
         if ($currency_form->getClickedButton() && "Currency_change" == $currency_form->getClickedButton()->getName())
         {
             $currency_name = $_POST['form']['name'];
-
         }
         return $this->render('@HncProject/Default/settings.html.twig', ['currency_form' => $currency_form->createView()]);
     }

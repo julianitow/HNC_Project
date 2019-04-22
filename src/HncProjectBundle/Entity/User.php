@@ -84,12 +84,11 @@ class User implements UserInterface, \Serializable
     private $isActive;
 
     /**
-     * @var
-     * @ORM\Column(name="settings_id", type="integer")
-     * @ORM\OneToOne(targetEntity="user_settings")
-     * @ORM\JoinColumn(name="settings_id", referencedColumnName="id")
+     * @var string
+     * @ORM\Column(name="currency", type="string", nullable = false)
+     *
      */
-    private $settingsID;
+    private $currency;
 
 
     /**
@@ -294,19 +293,20 @@ class User implements UserInterface, \Serializable
         return $this->portfolioID;
     }
 
-    public function setSettingsID($l_settingsID)
+    /**
+     * @param $l_currency
+     */
+    public function setCurrency($l_currency)
     {
-        $this->settingsID = $l_settingsID;
+        $this->currency = $l_currency;
     }
 
     /**
-     * Get settingsID
-     *
-     * @return int
+     * @return string
      */
-    public function getSettingsID()
+    public function getCurrency()
     {
-        return $this->settingsID;
+        return $this->currency;
     }
 
     /**
