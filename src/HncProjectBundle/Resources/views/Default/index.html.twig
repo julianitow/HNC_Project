@@ -149,12 +149,12 @@
                                 </div>
                                 <div class="modal-body">
                                     <a>Unit price: {{ attribute(search_result_data, "4. close") }} </a>
-                                    <!-- FORM TO IMPLEMENT -->
+                                    <!-- FORM FOR PURCHASING SHARES -->
                                     {{ form_start(purchase_form) }}
-                                    {{ form_row(purchase_form.share_name, { 'attr' : { 'class' : "form-control", 'value' : symbol_result, 'disabled' : 'true' } }) }}
+                                    {{ form_row(purchase_form.share_name, { 'attr' : { 'class' : "form-control", 'value' : symbol_result, 'readonly' : 'readonly' } }) }}
                                     {{ form_row(purchase_form.volume_amount, { 'attr' : { 'class' : "form-control", 'value' : '1', 'oninput' : "calcul_total()" } }) }}
                                     {{ form_row(purchase_form.portfolioId, { 'attr' : { 'class' : "form-control", 'value' : '1', 'oninput' : "calcul_total()" } }) }}
-                                    {{ form_row(purchase_form.price, { 'attr' : { 'class' : "form-control", 'disabled' : 'true' } }) }}
+                                    {{ form_row(purchase_form.price, { 'attr' : { 'class' : "form-control", 'readonly' : 'readonly' } }) }}
                                     {{ form_end(purchase_form) }}
                                 </div>
                                 <div class="modal-footer">

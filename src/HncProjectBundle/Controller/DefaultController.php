@@ -244,7 +244,6 @@ class DefaultController extends Controller
         $manager = $this->getDoctrine()->getManager();
         $portfolio_repository = $manager->getRepository('HncProjectBundle:Portfolio');
         $portfolio_choices = $portfolio_repository->findBy(['userId' => $this->get('session')->get('user_id')]);
-        $purchase = [];
         $transaction = new Transaction();
         $purchase_form_builder = $this->get('form.factory')->createNamedBuilder('purchase_form', FormType::class, $transaction, ['allow_extra_fields' => true]);
         $purchase_form_builder
@@ -260,14 +259,25 @@ class DefaultController extends Controller
         if ($purchase_form->isSubmitted() && $purchase_form->isValid())
         {
             $manager = $this->getDoctrine()->getManager();
-            //$transaction_repository = $manager->getRepository("HncProjectBundle:Transaction");
             $transaction = $purchase_form->getData();
             $transaction->setUserId($this->get('session')->get('user_id'));
+            $transaction->setPortfolioId($transaction->getPortfolioId()->getId());
 
-            var_dump($transaction);
+            $transaction->setDate(new \DateTime('today'));
 
             $portfolio_concerned = $portfolio_repository->findOneBy(['id' => $transaction->getPortfolioId()]);
-            //$portfolio_concerned->setTotalAmount($portfolio_concerned->getTotalAmount() + $transaction)
+            $portfolio_concerned->setTotalAmount($portfolio_concerned->getTotalAmount() + $transaction->getPrice());
+            $manager->persist($transaction);
+            $manager->persist($portfolio_concerned);
+
+            try
+            {
+                $manager->flush();
+            }
+            catch(\PDOException $e)
+            {
+                echo $e->getMessage();
+            }
         }
 
         return ['purchase_form' => $purchase_form];

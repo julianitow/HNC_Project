@@ -57,9 +57,9 @@ class Transaction
     private $date;
 
     /**
-     * @var int
+     * @var float
      *
-     * @ORM\Column(name="price", type="integer", nullable=false)
+     * @ORM\Column(name="price", type="float", nullable=false)
      */
     private $price;
 
