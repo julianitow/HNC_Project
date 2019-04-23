@@ -152,11 +152,19 @@
                                     <!-- FORM TO IMPLEMENT -->
                                     {{ form_start(purchase_form) }}
                                     {{ form_row(purchase_form.share_name, { 'attr' : { 'class' : "form-control", 'value' : symbol_result, 'disabled' : 'true' } }) }}
-                                    {{ form_row(purchase_form.volume_amount, { 'attr' : { 'class' : "form-control", 'value' : '1' } }) }}
+                                    {{ form_row(purchase_form.volume_amount, { 'attr' : { 'class' : "form-control", 'value' : '1', 'oninput' : "calcul_total()" } }) }}
+                                    {{ form_row(purchase_form.portfolioId, { 'attr' : { 'class' : "form-control", 'value' : '1', 'oninput' : "calcul_total()" } }) }}
+                                    {{ form_row(purchase_form.price, { 'attr' : { 'class' : "form-control", 'disabled' : 'true' } }) }}
                                     {{ form_end(purchase_form) }}
                                 </div>
                                 <div class="modal-footer">
-                                    <a style="float: left"><strong>Total:</strong></a>
+                                    <a style="float: left"><strong>Total:<a id="total_price"></a></strong>
+                                    {% if user_currency is defined %}
+                                        {{ user_currency }}
+                                    {% else %}
+                                        $
+                                    {% endif %}
+                                    </a>
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                                     <button type="button" class="btn btn-primary" onclick="submitForm()">Purchase</button>
                                 </div>
@@ -214,9 +222,22 @@
     <script type="text/javascript">
         submitForm = function()
         {
-            document.forms['purchase_form'].submit();
+            if (confirm("Do you wish to continue ?"))
+                document.forms['purchase_form'].submit();
+            else
+                window.alert("Transaction canceled");
         }
     </script>
+    {% if search_result_data != null %}
+        <script type="text/javascript">
+            calcul_total = function()
+            {
+                var amount = document.getElementById("purchase_form_volume_amount").value;
+                document.getElementById("purchase_form_price").value = amount * {{ attribute(search_result_data, "4. close") }};
+                document.getElementById("total_price").innerHTML = amount * {{ attribute(search_result_data, "4. close") }};
+            }
+        </script>
+    {% endif %}
 {% endblock %}
 
 {% block footer %}

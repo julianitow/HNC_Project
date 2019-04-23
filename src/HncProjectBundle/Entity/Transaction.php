@@ -56,6 +56,12 @@ class Transaction
      */
     private $date;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="price", type="integer", nullable=false)
+     */
+    private $price;
 
     /**
      * Get id
@@ -185,6 +191,23 @@ class Transaction
     public function getDate()
     {
         return $this->date;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * @param int $price
+     */
+
+    public function setPrice($price)
+    {
+        $this->price = $price;
     }
 }
 

@@ -13,7 +13,7 @@
             <h3>Current currency:</h3>
             {{ current_currency }}
         </div>
-        <div class="col-lg-8">
+        <div class="col-lg-4">
             <h3>Change:</h3>
             <div class="form-goup">
                 {{ form_start(currency_form) }}
@@ -22,6 +22,33 @@
                 {{ form_row(currency_form.Currency_change, { 'attr' : { 'class' : "btn btn-primary", 'style' : "float : right" } }) }}
                 {{ form_end(currency_form) }}
             </div>
+        </div>
+    </div><!-- row -->
+    <div class="row">
+        <div class="col-lg-4">
+            <h3>My portfolio(s)</h3>
+            <table class="table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">User id</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for portfolio in portfolio_list %}
+                <tr>
+                    <th scope="row">{{ portfolio.id }}</th>
+                    <td>{{ portfolio.userId }}</td>
+                </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+        <div class="col-lg-2">
+            <h3>New portfolio</h3>
+            {{ form_start(portfolio_form) }}
+            {{ form_row(portfolio_form.submit, { 'attr' : { 'class' : "btn btn-primary" } }) }}
+            {{ form_end(portfolio_form) }}
         </div>
     </div>
 {% endif %}

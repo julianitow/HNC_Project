@@ -3,8 +3,10 @@
 namespace HncProjectBundle\Controller;
 
 use HncProjectBundle\Entity\Currency;
+use HncProjectBundle\Entity\Portfolio;
 use HncProjectBundle\Entity\Transaction;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -26,6 +28,7 @@ class DefaultController extends Controller
             $user_id = $request->getSession()->get('user_id');
             $this->get('security.token_storage')->setToken($token);
             $logged_in = true;
+            $currency_user = $this->get_logged_user()->getCurrency();
         }
 
         $news = $this->get_JSON("https://newsapi.org/v2/top-headlines?language=en&country=gb&category=business&apiKey=ba3059047e3548fab44689b0b0870d93");
@@ -88,10 +91,15 @@ class DefaultController extends Controller
             $search_result = null;
         }
 
+        //PURCHASE FORM
+        $purchase = $this->purchase_form($request);
+        //var_dump($purchase);
+
         return $this->render('@HncProject/Default/index.html.twig', ['logged_in' => $logged_in,
             'user_id' => $user_id, 'articles'=> $news->articles, 'search_form' => $search_bar['search_form']->createView(),
             'search_result_day' => $search_result['day'], 'search_result_data' => $search_result['data'], 'ftse_data' => $ftse_data,
-            'error_code' => $error_code, 'symbol_result' => $symbol_result, 'sh' => $sh_object, 'purchase_form' => $this->purchase_form()->createView()]);
+            'error_code' => $error_code, 'symbol_result' => $symbol_result, 'sh' => $sh_object,
+            'purchase_form' => $purchase['purchase_form']->createView(), 'user_currency' => $currency_user]);
     }
 
     public function get_JSON($url)
@@ -159,6 +167,7 @@ class DefaultController extends Controller
             $share_data = $this->share_json($search_data['search_input']);
             $error_message = 'Error Message';
 
+
             if (property_exists($share_data['ShareData'], $error_message))
             {
                 $share_data = null;
@@ -173,10 +182,35 @@ class DefaultController extends Controller
         $manager = $this->getDoctrine()->getManager();
         $repository_user = $manager->getRepository('HncProjectBundle:User');
         $user = $repository_user->findOneBy(['id' => $this->get('session')->get('user_id')]);
+        $portfolio_repository = $manager->getRepository('HncProjectBundle:Portfolio');
+        //PORTFOLIO CREATION FORM
+        $portfolio = new Portfolio();
+        $portfolio_form_builder = $this->get('form.factory')->createNamedBuilder('portfolio_form', FormType::class, $portfolio, ['allow_extra_fields' => true]);
+        $portfolio_form_builder
+            ->add('submit', SubmitType::class);
+        $portfolio_form = $portfolio_form_builder->getForm();
+        $portfolio_form->handleRequest($request);
+
+        if ($portfolio_form->isSubmitted() && $portfolio_form->isValid())
+        {
+            $portfolio->setUserId($user->getId());
+            $manager->persist($portfolio);
+
+            try
+            {
+                $manager->flush();
+            }
+            catch(\PDOException $e)
+            {
+                echo "ERROR" . $e->getMessage();
+            }
+        }
+
+        $list_portfolio = $portfolio_repository->findBy(['userId' => $user->getId()]);
 
         $currency = new Currency();
         //$user = $repositoryUsers->findOneById($this->get('session')->get('user_id'));
-        $currency_form_builder = $this->get('form.factory')->createBuilder(FormType::class, $currency, ['allow_extra_fields' => true]);
+        $currency_form_builder = $this->get('form.factory')->createNamedBuilder('currency_form', FormType::class, $currency, ['allow_extra_fields' => true]);
         $currency_form_builder
             ->add('name', CurrencyType::class)
             ->add('Currency_change', SubmitType::class);
@@ -187,7 +221,7 @@ class DefaultController extends Controller
 
         if ($currency_form->getClickedButton() && "Currency_change" == $currency_form->getClickedButton()->getName())
         {
-            $currency_name = $_POST['form']['name'];
+            $currency_name = $_POST['currency_form']['name'];
             $user->setCurrency($currency_name);
             $manager->persist($user);
 
@@ -201,18 +235,50 @@ class DefaultController extends Controller
             }
 
         }
-        return $this->render('@HncProject/Default/settings.html.twig', ['currency_form' => $currency_form->createView(), 'current_currency' => $current_currency]);
+        return $this->render('@HncProject/Default/settings.html.twig', ['currency_form' => $currency_form->createView(), 'current_currency' => $current_currency,
+        'portfolio_form' => $portfolio_form->createView(), 'portfolio_list' => $list_portfolio]);
     }
 
-    public function purchase_form()
+    public function purchase_form(Request $request)
     {
+        $manager = $this->getDoctrine()->getManager();
+        $portfolio_repository = $manager->getRepository('HncProjectBundle:Portfolio');
+        $portfolio_choices = $portfolio_repository->findBy(['userId' => $this->get('session')->get('user_id')]);
+        $purchase = [];
         $transaction = new Transaction();
         $purchase_form_builder = $this->get('form.factory')->createNamedBuilder('purchase_form', FormType::class, $transaction, ['allow_extra_fields' => true]);
         $purchase_form_builder
             ->add('share_name', TextType::class)
-            ->add('volume_amount', NumberType::class);
+            ->add('volume_amount', NumberType::class)
+            ->add('portfolioId', ChoiceType::class, ['choices' => $portfolio_choices])
+            ->add('price', NumberType::class)
+            ;
         $purchase_form = $purchase_form_builder->getForm();
+        $purchase_form->handleRequest($request);
 
-        return $purchase_form;
+
+        if ($purchase_form->isSubmitted() && $purchase_form->isValid())
+        {
+            $manager = $this->getDoctrine()->getManager();
+            //$transaction_repository = $manager->getRepository("HncProjectBundle:Transaction");
+            $transaction = $purchase_form->getData();
+            $transaction->setUserId($this->get('session')->get('user_id'));
+
+            var_dump($transaction);
+
+            $portfolio_concerned = $portfolio_repository->findOneBy(['id' => $transaction->getPortfolioId()]);
+            //$portfolio_concerned->setTotalAmount($portfolio_concerned->getTotalAmount() + $transaction)
+        }
+
+        return ['purchase_form' => $purchase_form];
+    }
+
+    public function get_logged_user()
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $repository_user = $manager->getRepository('HncProjectBundle:User');
+        $user = $repository_user->findOneBy(['id' => $this->get('session')->get('user_id')]);
+
+        return $user;
     }
 }

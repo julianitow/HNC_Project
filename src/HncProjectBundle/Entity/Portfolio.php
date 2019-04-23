@@ -28,6 +28,12 @@ class Portfolio
      */
     private $userId;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="total_amount", type="integer", nullable=true)
+     */
+    private $totalAmount;
 
     /**
      * Get id
@@ -61,6 +67,22 @@ class Portfolio
     public function getUserId()
     {
         return $this->userId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalAmount()
+    {
+        return $this->totalAmount;
+    }
+
+    /**
+    * @param int $totalAmount
+    */
+    public function setTotalAmount($totalAmount)
+    {
+        $this->totalAmount = $totalAmount;
     }
 }
 
