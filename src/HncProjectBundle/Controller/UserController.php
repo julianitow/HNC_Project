@@ -166,6 +166,8 @@ class UserController extends Controller
     {
 
         $ftse_data = null;
+        if ($this->get('session')->get('user_id') == NULL)
+            return $this->redirectToRoute("hnc_project_homepage");
         $manager = $this->getDoctrine()->getManager();
         $repositoryUsers = $manager->getRepository('HncProjectBundle:User');
         $user = $repositoryUsers->findOneById($this->get('session')->get('user_id'));

@@ -9,7 +9,12 @@
     </div>
 {% else %}
     <div class="row">
+        <div class="col-lg-4">
+            <h3>Current currency:</h3>
+            {{ current_currency }}
+        </div>
         <div class="col-lg-8">
+            <h3>Change:</h3>
             <div class="form-goup">
                 {{ form_start(currency_form) }}
                 {{ form_row(currency_form.name, { 'attr' : { 'class' : "form-control" } }) }}

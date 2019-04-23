@@ -3,11 +3,14 @@
 namespace HncProjectBundle\Controller;
 
 use HncProjectBundle\Entity\Currency;
+use HncProjectBundle\Entity\Transaction;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
@@ -88,7 +91,7 @@ class DefaultController extends Controller
         return $this->render('@HncProject/Default/index.html.twig', ['logged_in' => $logged_in,
             'user_id' => $user_id, 'articles'=> $news->articles, 'search_form' => $search_bar['search_form']->createView(),
             'search_result_day' => $search_result['day'], 'search_result_data' => $search_result['data'], 'ftse_data' => $ftse_data,
-            'error_code' => $error_code, 'symbol_result' => $symbol_result, 'sh' => $sh_object]);
+            'error_code' => $error_code, 'symbol_result' => $symbol_result, 'sh' => $sh_object, 'purchase_form' => $this->purchase_form()->createView()]);
     }
 
     public function get_JSON($url)
@@ -167,6 +170,10 @@ class DefaultController extends Controller
 
     public function settingsAction(Request $request)
     {
+        $manager = $this->getDoctrine()->getManager();
+        $repository_user = $manager->getRepository('HncProjectBundle:User');
+        $user = $repository_user->findOneBy(['id' => $this->get('session')->get('user_id')]);
+
         $currency = new Currency();
         //$user = $repositoryUsers->findOneById($this->get('session')->get('user_id'));
         $currency_form_builder = $this->get('form.factory')->createBuilder(FormType::class, $currency, ['allow_extra_fields' => true]);
@@ -176,10 +183,36 @@ class DefaultController extends Controller
         $currency_form = $currency_form_builder->getForm();
         $currency_form->handleRequest($request);
 
+        $current_currency = $user->getCurrency();
+
         if ($currency_form->getClickedButton() && "Currency_change" == $currency_form->getClickedButton()->getName())
         {
             $currency_name = $_POST['form']['name'];
+            $user->setCurrency($currency_name);
+            $manager->persist($user);
+
+            try
+            {
+                $manager->flush();
+            }
+            catch(\PDOException $e)
+            {
+                echo "<div class=\"alert alert-danger\">" . $e->getMessage() . "</div>";
+            }
+
         }
-        return $this->render('@HncProject/Default/settings.html.twig', ['currency_form' => $currency_form->createView()]);
+        return $this->render('@HncProject/Default/settings.html.twig', ['currency_form' => $currency_form->createView(), 'current_currency' => $current_currency]);
+    }
+
+    public function purchase_form()
+    {
+        $transaction = new Transaction();
+        $purchase_form_builder = $this->get('form.factory')->createNamedBuilder('purchase_form', FormType::class, $transaction, ['allow_extra_fields' => true]);
+        $purchase_form_builder
+            ->add('share_name', TextType::class)
+            ->add('volume_amount', NumberType::class);
+        $purchase_form = $purchase_form_builder->getForm();
+
+        return $purchase_form;
     }
 }
