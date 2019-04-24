@@ -134,7 +134,7 @@
                                 </div><!-- home_card -->
                             </div><!-- share -->
                         </div><!-- col-lg-2 -->
-                        <div class="col-lg-4">
+                        <div class="col-sm-4">
                             <div id="line_top_x"></div>
                         </div>
                     </div><!-- row -->
@@ -148,6 +148,9 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
+                                {% if app.session.get('user_id') == null %}
+                                    <div class="alert alert-danger">You must be logged to purchase shares.</div>
+                                {% else %}
                                     <a>Unit price: {{ attribute(search_result_data, "4. close") }} </a>
                                     <!-- FORM FOR PURCHASING SHARES -->
                                     {{ form_start(purchase_form) }}
@@ -168,6 +171,7 @@
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                                     <button type="button" class="btn btn-primary" onclick="submitForm()">Purchase</button>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

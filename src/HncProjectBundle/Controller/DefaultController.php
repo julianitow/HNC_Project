@@ -22,6 +22,7 @@ class DefaultController extends Controller
         $logged_in = false;
         $user_id = null;
         $symbol_result = null;
+        $currency_user = null;
         if ( null != $request->getSession()->get('token'))
         {
             $token = $token = $this->get('session')->get('token');
