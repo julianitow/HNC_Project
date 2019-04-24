@@ -1,0 +1,42 @@
+{% extends "@HncProject/Default/template.html.twig" %}
+
+{% block head %}
+    <title>UserSettings</title>
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block body_container %}
+
+<div class="user_settings container">
+
+    <div class="row">
+
+        <div class="col-lg-1"></div>
+            <div class="col-lg-5">
+                    <h3>User Settings</h3>
+                    {{ form_start(user_settingsForm) }}
+                    {{ form_row(user_settingsForm.firstname) }}
+                    {{ form_row(user_settingsForm.lastname) }}
+                    {{ form_row(user_settingsForm.email) }}
+                    {{ form_row(user_settingsForm.birthday) }}
+                    {{ form_row(user_settingsForm.phonenumber) }}<br>
+                    {{ form_end(user_settingsForm, { 'attr' : { 'style' : 'float : right' } }) }}
+            </div>
+
+            <div class="col-lg-5">
+                    <h3>User Password</h3>
+                    {{ form_start(user_passwordForm) }}
+                    {{ form_row(user_passwordForm.password.first) }}
+                    {{ form_row(user_passwordForm.password.second) }}<br>
+                    {{ form_end(user_passwordForm, { 'attr' : { 'style' : 'float : right' } }) }}
+            </div>
+        <div class="col-lg-1"></div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

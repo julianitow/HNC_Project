@@ -26,6 +26,8 @@
     {% endblock %}
     {% block body_container %}
     {% endblock %}
+    {% block alert %}
+    {% endblock %}
 
 <div class="card-footer text-muted" id="footer">
     FOOTER
@@ -42,6 +44,8 @@
         $("#wrapper").toggleClass("toggled");
     });
 </script>
+{% block script %}
+{% endblock %}
 
 </body>
 

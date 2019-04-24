@@ -83,6 +83,13 @@ class User implements UserInterface, \Serializable
      */
     private $isActive;
 
+    /**
+     * @var string
+     * @ORM\Column(name="currency", type="string", nullable = false)
+     *
+     */
+    private $currency;
+
 
     /**
      * Get id
@@ -284,6 +291,22 @@ class User implements UserInterface, \Serializable
     public function getPortfolioID()
     {
         return $this->portfolioID;
+    }
+
+    /**
+     * @param $l_currency
+     */
+    public function setCurrency($l_currency)
+    {
+        $this->currency = $l_currency;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
     }
 
     /**

@@ -101,3 +101,11 @@ div.inline
     font-weight: bold;
     color: green;
 }
+
+.shares_table
+{
+    max-height: 400px;
+    max-width: 100%;
+    overflow: auto;
+    margin-left: 5%;
+}

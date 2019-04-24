@@ -9,6 +9,7 @@
     <link href="{{ asset('css/caroussel.css') }}" rel="stylesheet">
     <link href="{{ asset('css/simple-sidebar.css') }}" rel="stylesheet">
     <link href="{{ asset('font-awesome/css/all.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ asset('jquery/jquery-3.2.1.slim.min.js') }}"></script>
     <style>
         body{
             margin:0;
@@ -16,53 +17,9 @@
         }
     </style>
     <script src="{{ asset('jquery/jquery.slim.min.js') }}" type="text/javascript"></script>
-    <!--<script>
-        window.onload = function () {
-
-            var chart = new CanvasJS.Chart("chartContainer", {
-                animationEnabled: true,
-                title:{
-                    text: ""
-                },
-                axisX:{
-                    valueFormatString: "DD MMM",
-                    crosshair: {
-                        enabled: true,
-                        snapToDataPoint: true
-                    }
-                },
-                axisY: {
-                    title: "",
-                    includeZero: false,
-                    valueFormatString: "$##0.00",
-                    crosshair: {
-                        enabled: true,
-                        snapToDataPoint: true,
-                        labelFormatter: function(e) {
-                            return "$" + CanvasJS.formatNumber(e.value, "##0.00");
-                        }
-                    }
-                },
-                data: [{
-                    type: "area",
-                    xValueFormatString: "DD MMM",
-                    yValueFormatString: "$##0.00",
-                    dataPoints: [
-                        { x: new Date(2016, 07, 01), y: 76.727997 },
-                        { x: new Date(2016, 07, 02), y: 75.459999 },
-                        { x: new Date(2016, 07, 03), y: 76.011002 },
-                        { x: new Date(2016, 07, 04), y: 75.751999 },
-                        { x: new Date(2016, 07, 05), y: 77.500000 },
-                    ]
-                }]
-            });
-            chart.render();
-
-        }
-    </script>-->
     {% block head %}
 
-    <title>Welcome to Symfony!</title>
+    <title>TITLE</title>
 
     {% endblock %}
 
@@ -75,9 +32,9 @@
     <div class="bg-light border-right" id="sidebar-wrapper">
         <div class="sidebar-heading">LOGO - Project_name</div>
         <div class="list-group list-group-flush">
-            <a href="#" class="list-group-item list-group-item-action bg-light"><i class="fas fa-home"></i> Home</a>
-            <a href="#" class="list-group-item list-group-item-action bg-light"><i class="fas fa-user-alt"></i> My account</a>
-            <a href="#" class="list-group-item list-group-item-action bg-light"><i class="fas fa-cogs"></i> Settings</a>
+            <a href="/" class="list-group-item list-group-item-action bg-light"><i class="fas fa-home"></i> Home</a>
+            <a href="user_settings" class="list-group-item list-group-item-action bg-light"><i class="fas fa-user-alt"></i> My account</a>
+            <a href="settings" class="list-group-item list-group-item-action bg-light"><i class="fas fa-cogs"></i> Settings</a>
         </div>
     </div>
     <!-- /#sidebar-wrapper -->
@@ -90,28 +47,31 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="nav-item active">
-                {% for ftse in ftse_data['pieces'] %}
-                    {{ ftse }}
-                {% endfor %}
+                {% if ftse_data is defined %}
+                    {% if ftse_data != null %}
+                        {% for ftse in ftse_data['pieces'] %}
+                            {{ ftse }}
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
             </div>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                    <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
-                    </form>
+                    {% if search_form is defined %}
+                        {{ form(search_form, { 'attr' : { 'class' : 'form-inline'} }) }}
+                    {% endif %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             <i class="fas fa-user-circle"></i> My Account
                         </a>
-                        {% if logged_in == false %}
+                        {% if app.session.get('user_id') == null %}
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="/login"><i class="fas fa-sign-in-alt"></i> Sign in</a>
                             <a class="dropdown-item" href="/register"><i class="fas fa-user-plus"></i> Register</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/about_us"><i class="fas fa-user-tie"></i> About us</a>
                         </div>
-                        {% elseif logged_in == true %}
+                        {% elseif app.session.get('user_id') != null %}
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="/user_settings"><i class="fas fa-user-cog"></i> My account</a>
                                 <a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt"></i> Log out</a>
@@ -124,8 +84,10 @@
             </div>
         </nav>
 
-    {% block body_first %}
-    {% endblock %}
+        {% block body_first %}
+        {% endblock %}
+        {% block body_container %}
+        {% endblock %}
     </div><!-- page-content-wrapper -->
 </div><!-- wrapper -->
 
@@ -168,7 +130,8 @@
         $("#wrapper").toggleClass("toggled");
     });
 </script>
-
+{% block script %}
+{% endblock %}
 </body>
 
 <footer>
