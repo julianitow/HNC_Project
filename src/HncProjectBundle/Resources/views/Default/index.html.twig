@@ -151,9 +151,9 @@
                                 {% if app.session.get('user_id') == null %}
                                     <div class="alert alert-danger">You must be logged to purchase shares.</div>
                                 {% else %}
-                                    <a>Unit price: {{ attribute(search_result_data, "4. close") }} </a>
                                     <!-- FORM FOR PURCHASING SHARES -->
                                     {{ form_start(purchase_form) }}
+                                    {{ form_row(purchase_form.sharePrice, { 'attr' : { 'class' : "form-control", 'value' : attribute(search_result_data, "4. close"), 'readonly' : 'readonly' } }) }}
                                     {{ form_row(purchase_form.share_name, { 'attr' : { 'class' : "form-control", 'value' : symbol_result, 'readonly' : 'readonly' } }) }}
                                     {{ form_row(purchase_form.volume_amount, { 'attr' : { 'class' : "form-control", 'value' : '1', 'oninput' : "calcul_total()" } }) }}
                                     {{ form_row(purchase_form.portfolioId, { 'attr' : { 'class' : "form-control", 'value' : '1', 'oninput' : "calcul_total()" } }) }}

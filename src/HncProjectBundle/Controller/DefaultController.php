@@ -44,6 +44,8 @@ class DefaultController extends Controller
 
         $today = date('Y-m-d');
         $yesterday = date('Y-m-d', strtotime( '-1 days' ));
+        $yesterday_2 = date('Y-m-d', strtotime( '-2 days' ));
+        $yesterday_3 = date('Y-m-d', strtotime( '-3 days' ));
 
         $search_bar = $this->search_form($request);
 
@@ -52,14 +54,18 @@ class DefaultController extends Controller
         $symbol = "2. Symbol";
         $volume = "5. volume";
         $close = "4. close";
-        //var_dump($this->share_json($search_bar['search_result']['ShareData']->$meta_data->$symbol));
-        //var_dump($this->ftse_json());
+
         $sh_object = array();
         if ($search_bar['search_result'] != null)
         {
             //var_dump($this->share_json());
             foreach($search_bar['search_result'] as $result)
             {
+                if (!property_exists($result, $time_series_daily))
+                {
+                    echo "<div class=\"alert alert-danger\">Sorry, API unreachable please try again later.</div>";
+                    exit();
+                }
                 $data = $result->$time_series_daily;
                 $symbol_result = $result->$meta_data->$symbol;
                 //var_dump($search_bar['search_result']);
@@ -71,6 +77,14 @@ class DefaultController extends Controller
                 else if (property_exists($data, $yesterday))
                 {
                     $search_result = ['day' => $yesterday, 'data' => $data->$yesterday];
+                }
+                else if (property_exists($data, $yesterday_2))
+                {
+                    $search_result = ['day' => $yesterday, 'data' => $data->$yesterday_2];
+                }
+                else if (property_exists($data, $yesterday_3))
+                {
+                    $search_result = ['day' => $yesterday, 'data' => $data->$yesterday_3];
                 }
                 else
                 {
@@ -168,7 +182,6 @@ class DefaultController extends Controller
             $share_data = $this->share_json($search_data['search_input']);
             $error_message = 'Error Message';
 
-
             if (property_exists($share_data['ShareData'], $error_message))
             {
                 $share_data = null;
@@ -236,6 +249,8 @@ class DefaultController extends Controller
             }
 
         }
+
+        $this->calcul_change_portfolio();
         return $this->render('@HncProject/Default/settings.html.twig', ['currency_form' => $currency_form->createView(), 'current_currency' => $current_currency,
         'portfolio_form' => $portfolio_form->createView(), 'portfolio_list' => $list_portfolio]);
     }
@@ -248,6 +263,7 @@ class DefaultController extends Controller
         $transaction = new Transaction();
         $purchase_form_builder = $this->get('form.factory')->createNamedBuilder('purchase_form', FormType::class, $transaction, ['allow_extra_fields' => true]);
         $purchase_form_builder
+            ->add('sharePrice', NumberType::class)
             ->add('share_name', TextType::class)
             ->add('volume_amount', NumberType::class)
             ->add('portfolioId', ChoiceType::class, ['choices' => $portfolio_choices])
@@ -291,5 +307,56 @@ class DefaultController extends Controller
         $user = $repository_user->findOneBy(['id' => $this->get('session')->get('user_id')]);
 
         return $user;
+    }
+
+    public function calcul_change_portfolio()
+    {
+        $user_id = $this->get('session')->get('user_id');
+        $manager = $this->getDoctrine()->getManager();
+        $portfolio_repository = $manager->getRepository('HncProjectBundle:Portfolio');
+        $transaction_repository = $manager->getRepository('HncProjectBundle:Transaction');
+        $portfolio_list = $portfolio_repository->findAll();
+        $transaction_list = $transaction_repository->findAll();
+
+        $today = date('Y-m-d');
+        $yesterday = date('Y-m-d', strtotime( '-1 days' ));
+        $yesterday_2 = date('Y-m-d', strtotime( '-2 days' ));
+        $yesterday_3 = date('Y-m-d', strtotime( '-3 days' ));
+
+        $time_series_daily = 'Time Series (Daily)';
+        $close = "4. close";
+
+        foreach($portfolio_list as $portfolio)
+        {
+            foreach($transaction_list as $transaction)
+            {
+                if ($transaction->getId() == $portfolio->getId())
+                {
+                    foreach($this->share_json($transaction->getShareName()) as $result) {
+
+                        if (!property_exists($result, $time_series_daily))
+                        {
+                            echo "<div class=\"alert alert-danger\">Sorry, API unreachable please try again later.</div>";
+                            return;
+                        }
+                        $data = $result->$time_series_daily;
+
+                        if (property_exists($data, $today)) {
+                            $share_result = ['portfolio' => $portfolio->getId(), 'data' => $data->$today->$close];
+                        } else if (property_exists($data, $yesterday)) {
+                            $share_result = ['portfolio' => $portfolio->getId(), 'data' => $data->$yesterday->$close];
+                        } else if (property_exists($data, $yesterday_2)) {
+                            $share_result = ['portfolio' => $portfolio->getId(), 'data' => $data->$yesterday_2->$close];
+                        } else if (property_exists($data, $yesterday_3)) {
+                            $share_result = ['portfolio' => $portfolio->getId(), 'data' => $data->$yesterday_3->$close];
+                        } else {
+                            $search_result = null;
+                        }
+
+                        echo $portfolio->getId() . "-" . $portfolio->getUserId() . " " . $share_result['data'] . " -- " . $transaction->getSharePrice() . "| <br>";
+                    }
+                }
+            }
+        }
     }
 }
