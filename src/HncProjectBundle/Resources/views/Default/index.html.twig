@@ -14,11 +14,18 @@
             data.addColumn('number', '{{ symbol_result }}');
 
             data.addRows([
+                {% set x = sh|length-1 %}
                 {% set i = 0 %}
+                {% for z in x..0 %}
+                    {% set i = i + 1 %}
+                    [{{ i }}, {{ attribute(sh[z], "4. close") }}],
+                {% endfor %}
+
+                {#{% set i = 0 %}
                 {% for data in sh %}
                     {% set i = i + 1 %}
-                    [{{ i }}, {{ attribute(data, "4. close") }}],
-                {% endfor %}
+
+                {% endfor %}#}
             ]);
 
             var options = {
@@ -40,7 +47,18 @@
 
             var chart = new google.charts.Line(document.getElementById('line_top_x'));
 
-            chart.draw(data, google.charts.Line.convertOptions(options));
+            //chart.draw(data, google.charts.Line.convertOptions(options));
+            function resize () {
+                // change dimensions if necessary
+                chart.draw(data, google.charts.Line.convertOptions(options));
+            }
+            window.onload = resize();
+            if (window.addEventListener) {
+                window.addEventListener('resize', resize);
+            }
+            else {
+                window.attachEvent('onresize', resize);
+            }
         }
     </script>
 
@@ -134,8 +152,8 @@
                                 </div><!-- home_card -->
                             </div><!-- share -->
                         </div><!-- col-lg-2 -->
-                        <div class="col-sm-4">
-                            <div id="line_top_x"></div>
+                        <div class="">
+                            <div class="col-lg-2" id="line_top_x"></div>
                         </div>
                     </div><!-- row -->
                     <div class="modal fade" id="buy_modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
