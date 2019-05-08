@@ -38,7 +38,6 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">User id</th>
-                    <th scope="col">Amount purchased date</th>
                     <th scope="col">Details</th>
                 </tr>
                 </thead>
@@ -47,7 +46,7 @@
                 <tr>
                     <th scope="row">{{ portfolio.id }}</th>
                     <td>{{ portfolio.userId }}</td>
-                    <td>{{ portfolio.totalAmount }}</td>
+                    <td>{{ portfolio.totalAmount }} {% if portfolio.totalAmount == null %} 0 {% endif %} <strong>$</strong></td>
                     <td><button id="button {{ portfolio.id }}" onclick="button_portfolio({{ portfolio.id }}, {{ portfolio.totalAmount }})" type="button" class="badge badge-primary" data-toggle="modal" data-target="#portfolio_details" data-whatever="{{ portfolio.id }}">Open</button></td>
                 </tr>
                 {% endfor %}
