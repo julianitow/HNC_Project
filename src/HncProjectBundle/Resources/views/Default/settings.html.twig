@@ -15,7 +15,9 @@
     <div class="row">
         <div class="col-lg-4">
             <h3>Current currency:</h3>
-            {{ current_currency }}
+            {% if current_currency is defined %}
+                {{ current_currency }}
+            {% endif %}
         </div>
         <div class="col-lg-4">
             <h3>Change:</h3>
@@ -37,7 +39,7 @@
                     <th scope="col">#</th>
                     <th scope="col">User id</th>
                     <th scope="col">Amount purchased date</th>
-                    <th scope="col">Amount today</th>
+                    <th scope="col">Details</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -46,7 +48,7 @@
                     <th scope="row">{{ portfolio.id }}</th>
                     <td>{{ portfolio.userId }}</td>
                     <td>{{ portfolio.totalAmount }}</td>
-                    <td></td>
+                    <td><button id="button {{ portfolio.id }}" onclick="button_portfolio({{ portfolio.id }}, {{ portfolio.totalAmount }})" type="button" class="badge badge-primary" data-toggle="modal" data-target="#portfolio_details" data-whatever="{{ portfolio.id }}">Open</button></td>
                 </tr>
                 {% endfor %}
 
@@ -59,5 +61,70 @@
             {{ form_end(portfolio_form) }}
         </div>
     </div>
+    <div class="modal fade" id="portfolio_details" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modal-title" class="modal-title" id="ModalLabel">Portfolio n°</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% if app.session.get('user_id') == null %}
+                    <div class="alert alert-danger">You must be logged to purchase shares.</div>
+                    {% else %}
+                    <!-- portfolio_details -->
+                    <div class="portfolio_table">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col">Share</th>
+                                <th scope="col">Volume bought</th>
+                                <th scope="col">Date of buy</th>
+                                <th scope="col">Unit Price</th>
+                            </tr>
+                            </thead>
+                            <tbody id="details_body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endif %}
+{% endblock %}
+{% block script %}
+    {% if app.session.get('user_id') != null %}
+    <script type="text/javascript">
+        function button_portfolio(portfolio_id, amount)
+        {
+            console.log(portfolio_id);
+            console.log(amount);
+            {% if transaction_list is defined %}
+            {% for transaction in transaction_list %}
+            if ({{ transaction.portfolioId }} == portfolio_id)
+            {
+                console.log("{{ transaction.shareName }}")
+                document.getElementById("details_body").
+                insertAdjacentHTML("afterbegin", "<tr><th scope=\"row\"> {{ transaction.shareName }} </th>" +
+                    "<td> {{ transaction.volumeAmount }} </td>" +
+                    "<td> {{ transaction.date|date("d/m/Y") }} </td>" +
+                    "<td> {{ transaction.price }} <strong>$</strong</td></tr>");
+            }
+            {% endfor %}
+            {% endif %}
+            document.getElementById("modal-title").textContent = "Portfolio n° " + portfolio_id;
+            //location.href = "/settings/" + portfolio_id;
+        }
+        $('#buy_modal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        })
+    </script>
+    {% endif %}
 {% endblock %}
