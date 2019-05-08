@@ -64,6 +64,13 @@ class Transaction
     private $price;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="sharePrice", type="float", nullable=true   )
+     */
+    private $sharePrice;
+
+    /**
      * Get id
      *
      * @return int
@@ -208,6 +215,22 @@ class Transaction
     public function setPrice($price)
     {
         $this->price = $price;
+    }
+
+    /**
+     * @return float
+     */
+    public function getSharePrice()
+    {
+        return $this->sharePrice;
+    }
+
+    /**
+     * @param $sharePprice
+     */
+    public function setSharePrice($sharePrice)
+    {
+        $this->sharePrice = $sharePrice;
     }
 }
 

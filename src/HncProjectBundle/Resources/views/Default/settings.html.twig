@@ -1,5 +1,9 @@
 {% extends '@HncProject/Default/template.html.twig' %}
 
+{% block head %}
+    <title>Settings</title>
+{% endblock %}
+
 {% block body_first %}
 {% if app.session.get('user_id') == null %}
     <div class="row">
@@ -32,7 +36,8 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">User id</th>
-                    <th scope="col">Amount</th>
+                    <th scope="col">Amount purchased date</th>
+                    <th scope="col">Amount today</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -41,6 +46,7 @@
                     <th scope="row">{{ portfolio.id }}</th>
                     <td>{{ portfolio.userId }}</td>
                     <td>{{ portfolio.totalAmount }}</td>
+                    <td></td>
                 </tr>
                 {% endfor %}
 
