@@ -197,6 +197,7 @@ class DefaultController extends Controller
         $repository_user = $manager->getRepository('HncProjectBundle:User');
         $user = $repository_user->findOneBy(['id' => $this->get('session')->get('user_id')]);
         $portfolio_repository = $manager->getRepository('HncProjectBundle:Portfolio');
+        $transaction_repository = $manager->getRepository('HncProjectBundle:Transaction');
         //PORTFOLIO CREATION FORM
         $portfolio = new Portfolio();
         $portfolio_form_builder = $this->get('form.factory')->createNamedBuilder('portfolio_form', FormType::class, $portfolio, ['allow_extra_fields' => true]);
@@ -220,39 +221,46 @@ class DefaultController extends Controller
             }
         }
 
-        $list_portfolio = $portfolio_repository->findBy(['userId' => $user->getId()]);
-
-        $currency = new Currency();
-        //$user = $repositoryUsers->findOneById($this->get('session')->get('user_id'));
-        $currency_form_builder = $this->get('form.factory')->createNamedBuilder('currency_form', FormType::class, $currency, ['allow_extra_fields' => true]);
-        $currency_form_builder
-            ->add('name', CurrencyType::class)
-            ->add('Currency_change', SubmitType::class);
-        $currency_form = $currency_form_builder->getForm();
-        $currency_form->handleRequest($request);
-
-        $current_currency = $user->getCurrency();
-
-        if ($currency_form->getClickedButton() && "Currency_change" == $currency_form->getClickedButton()->getName())
-        {
-            $currency_name = $_POST['currency_form']['name'];
-            $user->setCurrency($currency_name);
-            $manager->persist($user);
-
-            try
-            {
-                $manager->flush();
-            }
-            catch(\PDOException $e)
-            {
-                echo "<div class=\"alert alert-danger\">" . $e->getMessage() . "</div>";
-            }
-
+        if ($this->get('session')->get('user_id') == null) {
+            $list_portfolio = null;
+            return $this->render('@HncProject/Default/settings.html.twig');
         }
+        else {
+            $list_portfolio = $portfolio_repository->findBy(['userId' => $user->getId()]);
+            $list_transaction = $transaction_repository->findBy(['userId' => $user->getId()]);
 
-        $this->calcul_change_portfolio();
-        return $this->render('@HncProject/Default/settings.html.twig', ['currency_form' => $currency_form->createView(), 'current_currency' => $current_currency,
-        'portfolio_form' => $portfolio_form->createView(), 'portfolio_list' => $list_portfolio]);
+            $currency = new Currency();
+            //$user = $repositoryUsers->findOneById($this->get('session')->get('user_id'));
+            $currency_form_builder = $this->get('form.factory')->createNamedBuilder('currency_form', FormType::class, $currency, ['allow_extra_fields' => true]);
+            $currency_form_builder
+                ->add('name', CurrencyType::class)
+                ->add('Currency_change', SubmitType::class);
+            $currency_form = $currency_form_builder->getForm();
+            $currency_form->handleRequest($request);
+
+            $current_currency = $user->getCurrency();
+
+            if ($currency_form->getClickedButton() && "Currency_change" == $currency_form->getClickedButton()->getName())
+            {
+                $currency_name = $_POST['currency_form']['name'];
+                $user->setCurrency($currency_name);
+                $manager->persist($user);
+
+                try
+                {
+                    $manager->flush();
+                }
+                catch(\PDOException $e)
+                {
+                    echo "<div class=\"alert alert-danger\">" . $e->getMessage() . "</div>";
+                }
+
+            }
+
+            $this->calcul_change_portfolio();
+            return $this->render('@HncProject/Default/settings.html.twig', ['currency_form' => $currency_form->createView(), 'current_currency' => $current_currency,
+                'portfolio_form' => $portfolio_form->createView(), 'portfolio_list' => $list_portfolio, 'transaction_list' => $list_transaction]);
+        }
     }
 
     public function purchase_form(Request $request)
@@ -317,7 +325,7 @@ class DefaultController extends Controller
         $transaction_repository = $manager->getRepository('HncProjectBundle:Transaction');
         $portfolio_list = $portfolio_repository->findAll();
         $transaction_list = $transaction_repository->findAll();
-
+/*
         $today = date('Y-m-d');
         $yesterday = date('Y-m-d', strtotime( '-1 days' ));
         $yesterday_2 = date('Y-m-d', strtotime( '-2 days' ));
@@ -357,6 +365,6 @@ class DefaultController extends Controller
                     }
                 }
             }
-        }
+        }*/
     }
 }
