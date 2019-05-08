@@ -17,6 +17,8 @@
             <h3>Current currency:</h3>
             {% if current_currency is defined %}
                 {{ current_currency }}
+            <h3>Rate:</h3>
+                1{{ current_currency }} = {{ exchange_rate }}$
             {% endif %}
         </div>
         <div class="col-lg-4">
@@ -46,7 +48,7 @@
                 <tr>
                     <th scope="row">{{ portfolio.id }}</th>
                     <td>{{ portfolio.userId }}</td>
-                    <td>{{ portfolio.totalAmount }} {% if portfolio.totalAmount == null %} 0 {% endif %} <strong>$</strong></td>
+                    <td>{{ portfolio.totalAmount * exchange_rate }} {% if portfolio.totalAmount == null %} 0 {% endif %} <strong>{{ current_currency }}</strong></td>
                     <td><button id="button {{ portfolio.id }}" onclick="button_portfolio({{ portfolio.id }}, {{ portfolio.totalAmount }})" type="button" class="badge badge-primary" data-toggle="modal" data-target="#portfolio_details" data-whatever="{{ portfolio.id }}">Open</button></td>
                 </tr>
                 {% endfor %}
@@ -90,7 +92,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <strong>Total: <a id="total_transactions"></a> $ </strong>
+                    <strong>Total: <a id="total_transactions"></a></strong>
                     <button type="button" onclick="clear_table()" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
                 {% endif %}
@@ -115,12 +117,12 @@
                 insertAdjacentHTML("afterbegin", "<tr><th scope=\"row\"> {{ transaction.shareName }} </th>" +
                     "<td> {{ transaction.volumeAmount }} </td>" +
                     "<td> {{ transaction.date|date("d/m/Y") }} </td>" +
-                    "<td> {{ transaction.price }} <strong>$</strong</td></tr>");
+                    "<td> {{ transaction.price * exchange_rate}} <strong>$</strong</td></tr>");
             }
             {% endfor %}
             {% endif %}
             document.getElementById("modal-title").textContent = "Portfolio n° " + portfolio_id;
-            document.getElementById("total_transactions").innerHTML = amount;
+            document.getElementById("total_transactions").innerHTML = amount * {{ exchange_rate }} + "{{ current_currency }}";
             //location.href = "/settings/" + portfolio_id;
         }
 

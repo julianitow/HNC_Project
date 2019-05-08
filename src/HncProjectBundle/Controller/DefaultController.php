@@ -257,9 +257,13 @@ class DefaultController extends Controller
 
             }
 
+            $exchange_rate = $this->get_exchange_rates('USD', $current_currency);
+
             $this->calcul_change_portfolio();
             return $this->render('@HncProject/Default/settings.html.twig', ['currency_form' => $currency_form->createView(), 'current_currency' => $current_currency,
-                'portfolio_form' => $portfolio_form->createView(), 'portfolio_list' => $list_portfolio, 'transaction_list' => $list_transaction]);
+                'portfolio_form' => $portfolio_form->createView(), 'portfolio_list' => $list_portfolio, 'transaction_list' => $list_transaction,
+                'exchange_rate' => $exchange_rate
+            ]);
         }
     }
 
@@ -366,5 +370,21 @@ class DefaultController extends Controller
                 }
             }
         }*/
+    }
+
+    public function get_exchange_rates($symbol_base, $symbol_result)
+    {
+        $rates = $this->get_JSON("https://api.exchangeratesapi.io/latest?base=$symbol_base");
+        $base = "base";
+        $rates_property = "rates";
+        if (property_exists($rates, $rates_property))
+        {
+            if (property_exists($rates->$rates_property, $symbol_result))
+                return $rates->$rates_property->$symbol_result;
+            else
+                return false;
+        }
+        else
+            return false;
     }
 }
