@@ -91,7 +91,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <strong>Total: <a id="total_transactions"></a> $ </strong>
+                    <button type="button" onclick="clear_table()" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
                 {% endif %}
             </div>
@@ -120,8 +121,15 @@
             {% endfor %}
             {% endif %}
             document.getElementById("modal-title").textContent = "Portfolio n° " + portfolio_id;
+            document.getElementById("total_transactions").innerHTML = amount;
             //location.href = "/settings/" + portfolio_id;
         }
+
+        function clear_table()
+        {
+            document.getElementById("details_body").innerHTML = "";
+        }
+
         $('#buy_modal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
         })
