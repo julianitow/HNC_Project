@@ -133,10 +133,10 @@
                                     </div>
                                     <div id="text_article" class="card_body">
                                         <ul>
-                                            <li>Open: {{ attribute(search_result_data, "1. open") }}</li>
-                                            <li>High: {{ attribute(search_result_data, "2. high") }}</li>
-                                            <li>Low: {{ attribute(search_result_data, "3. low") }}</li>
-                                            <li>Close: {{ attribute(search_result_data, "4. close") }}</li>
+                                            <li>Open: {{ attribute(search_result_data, "1. open") * exchange_rate|round(3) }}</li>
+                                            <li>High: {{ attribute(search_result_data, "2. high") * exchange_rate|round(3) }}</li>
+                                            <li>Low: {{ attribute(search_result_data, "3. low") * exchange_rate|round(3) }}</li>
+                                            <li>Close: {{ attribute(search_result_data, "4. close") * exchange_rate|round(3) }}</li>
                                             <li>Volume: {{ attribute(search_result_data, "5. volume") }}</li>
                                         </ul>
                                     </div><!-- text_article -->

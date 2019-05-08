@@ -108,13 +108,14 @@ class DefaultController extends Controller
 
         //PURCHASE FORM
         $purchase = $this->purchase_form($request);
-        //var_dump($purchase);
+        //GET EXCHANGE RATE
+        $exchange_rate = $this->get_exchange_rates('USD', $currency_user);
 
         return $this->render('@HncProject/Default/index.html.twig', ['logged_in' => $logged_in,
             'user_id' => $user_id, 'articles'=> $news->articles, 'search_form' => $search_bar['search_form']->createView(),
             'search_result_day' => $search_result['day'], 'search_result_data' => $search_result['data'], 'ftse_data' => $ftse_data,
             'error_code' => $error_code, 'symbol_result' => $symbol_result, 'sh' => $sh_object,
-            'purchase_form' => $purchase['purchase_form']->createView(), 'user_currency' => $currency_user]);
+            'purchase_form' => $purchase['purchase_form']->createView(), 'user_currency' => $currency_user, 'exchange_rate' => $exchange_rate]);
     }
 
     public function get_JSON($url)
